@@ -32,6 +32,19 @@
         .login-box .toggle-link:hover{color:#fff}
         .login-box .divider{height:1px;background:rgba(255,255,255,0.1);margin:16px 0}
 
+        /* ===== SHARE LINK BAR ===== */
+        .share-bar{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:14px 18px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+        .share-bar .link{font-size:14px;color:var(--text);word-break:break-all;flex:1}
+        .share-bar .link .label{font-size:12px;color:var(--text2);font-weight:500;margin-right:8px}
+        .share-bar .actions{display:flex;gap:8px;flex-wrap:wrap}
+        .share-bar .actions .btn{padding:6px 14px;border:none;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:6px}
+        .share-bar .actions .btn-copy{background:var(--primary);color:#fff}
+        .share-bar .actions .btn-copy:hover{transform:scale(1.05);box-shadow:0 4px 16px rgba(79,70,229,0.3)}
+        .share-bar .actions .btn-share{background:#25D366;color:#fff}
+        .share-bar .actions .btn-share:hover{transform:scale(1.05);box-shadow:0 4px 16px rgba(37,211,102,0.3)}
+        .share-bar .actions .btn-qr{background:var(--text2);color:#fff}
+        .share-bar .actions .btn-qr:hover{transform:scale(1.05)}
+
         /* ===== DASHBOARD ===== */
         .header{background:var(--card);padding:14px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
         .logo-text{font-size:22px;font-weight:800;color:var(--text)}
@@ -39,17 +52,20 @@
         .header-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
         .btn{padding:8px 16px;border:none;border-radius:10px;font-weight:600;font-size:12px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:6px}
         .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff}
+        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(79,70,229,0.3)}
         .btn-outline{background:transparent;border:2px solid var(--border);color:var(--text)}
+        .btn-outline:hover{background:var(--border)}
         .btn-danger{background:var(--danger);color:#fff}
-        .btn-success{background:var(--success);color:#fff}
+        .btn-danger:hover{background:#DC2626}
 
         .dashboard{max-width:1400px;margin:0 auto;padding:20px}
-        .welcome{margin-bottom:20px}
+        .welcome{margin-bottom:16px}
         .welcome h1{font-size:26px;font-weight:800}
         .welcome p{color:var(--text2);margin-top:4px;font-size:14px}
 
         .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:20px}
         .stat-card{background:var(--card);padding:16px 18px;border-radius:var(--radius);border:1px solid var(--border)}
+        .stat-card:hover{transform:translateY(-3px);box-shadow:0 4px 24px rgba(0,0,0,0.06)}
         .stat-card .icon{font-size:24px;margin-bottom:4px}
         .stat-card .label{font-size:11px;color:var(--text2);font-weight:500}
         .stat-card .value{font-size:22px;font-weight:800;margin-top:2px}
@@ -103,8 +119,8 @@
 
         .app-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
 
-        @media(max-width:768px){.dashboard{padding:14px}.device-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}.app-list{grid-template-columns:1fr}}
-        @media(max-width:480px){.stats-grid{grid-template-columns:1fr}.login-box{padding:30px 20px}}
+        @media(max-width:768px){.dashboard{padding:14px}.device-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}.app-list{grid-template-columns:1fr}.share-bar{flex-direction:column;align-items:stretch}}
+        @media(max-width:480px){.stats-grid{grid-template-columns:1fr}.login-box{padding:30px 20px}.share-bar .actions{flex-direction:column}.share-bar .actions .btn{justify-content:center}}
     </style>
 </head>
 <body>
@@ -158,6 +174,19 @@
         </div>
 
         <div class="dashboard">
+            <!-- ===== SHARE BAR ===== -->
+            <div class="share-bar">
+                <div class="link">
+                    <span class="label">🔗 Share Link:</span>
+                    <span id="shareLink">Loading...</span>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-copy" onclick="copyLink()"><i class="fas fa-copy"></i> Copy</button>
+                    <button class="btn btn-share" onclick="shareLink()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                    <button class="btn btn-qr" onclick="showQR()"><i class="fas fa-qrcode"></i> QR</button>
+                </div>
+            </div>
+
             <div class="welcome">
                 <h1>📊 Device Monitoring Dashboard</h1>
                 <p>Monitor calls, WhatsApp, apps, and device activity in real-time.</p>
@@ -267,19 +296,16 @@
                 return;
             }
 
-            // Save credentials
             saveAdminCredentials(name, email, password);
 
             successEl.textContent = '✅ Account created successfully! Please login.';
             successEl.style.display = 'block';
 
-            // Clear form
             document.getElementById('setupName').value = '';
             document.getElementById('setupEmail').value = '';
             document.getElementById('setupPassword').value = '';
             document.getElementById('setupConfirm').value = '';
 
-            // Show login after 1.5 seconds
             setTimeout(() => {
                 showLogin();
                 document.getElementById('loginEmail').value = email;
@@ -307,7 +333,6 @@
             }
 
             if (email === credentials.email && password === credentials.password) {
-                // ✅ Login Success
                 errorEl.style.display = 'none';
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('dashboardPage').style.display = 'block';
@@ -316,10 +341,10 @@
                 sessionStorage.setItem('isLoggedIn', 'true');
                 sessionStorage.setItem('userName', credentials.name);
 
+                updateShareLink();
                 toast('✅ Welcome back, ' + credentials.name + '!');
                 initDashboard();
             } else {
-                // ❌ Login Failed
                 errorEl.textContent = '❌ Invalid email or password!';
                 errorEl.style.display = 'block';
                 toast('❌ Invalid credentials!');
@@ -347,6 +372,7 @@
                     document.getElementById('loginPage').style.display = 'none';
                     document.getElementById('dashboardPage').style.display = 'block';
                     document.getElementById('userName').textContent = credentials.name || 'Admin';
+                    updateShareLink();
                     initDashboard();
                     return true;
                 } else {
@@ -354,13 +380,58 @@
                 }
             }
 
-            // Check if any admin account exists
             if (!getAdminCredentials()) {
-                // Show setup form
                 showSetup();
             }
 
             return false;
+        }
+
+        // ==========================================
+        // 🔗 SHARE LINK FUNCTIONS
+        // ==========================================
+        function updateShareLink() {
+            const link = window.location.href;
+            document.getElementById('shareLink').textContent = link;
+        }
+
+        function copyLink() {
+            const link = document.getElementById('shareLink').textContent;
+            navigator.clipboard.writeText(link).then(() => {
+                toast('✅ Link copied to clipboard!');
+            }).catch(() => {
+                // Fallback
+                const input = document.createElement('input');
+                input.value = link;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                toast('✅ Link copied!');
+            });
+        }
+
+        function shareLink() {
+            const link = document.getElementById('shareLink').textContent;
+            const msg = encodeURIComponent('📱 Check out Device Monitor! Real-time monitoring of calls, WhatsApp, and apps.\n\n' + link);
+            window.open('https://wa.me/?text=' + msg, '_blank');
+        }
+
+        function showQR() {
+            const link = document.getElementById('shareLink').textContent;
+            const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(link);
+            
+            const html = `
+                <button class="modal-close" onclick="closeModal()">✕</button>
+                <h2 style="margin-bottom:12px;">📱 Scan QR Code</h2>
+                <div style="text-align:center;">
+                    <img src="${qrUrl}" style="max-width:250px;border-radius:12px;border:2px solid var(--border);">
+                    <p style="margin-top:12px;color:var(--text2);font-size:13px;">Scan this QR code to access the dashboard</p>
+                    <div style="margin-top:8px;font-size:12px;color:var(--text2);word-break:break-all;">${link}</div>
+                </div>
+                <button class="btn-submit" onclick="closeModal()" style="margin-top:16px;">Close</button>
+            `;
+            openModal(html);
         }
 
         // ==========================================
@@ -380,7 +451,7 @@
                         name: "Aarav's iPhone",
                         model: "iPhone 14 Pro",
                         status: "online",
-                        lastActive: "2 min ago",
+                        lastActive: "Just now",
                         calls: [
                             { number: "+91 98765 43210", duration: "5:23", type: "incoming", time: "10:30 AM" },
                             { number: "+91 87654 32109", duration: "2:15", type: "outgoing", time: "09:45 AM" },
@@ -403,7 +474,7 @@
                         name: "Ananya's Samsung",
                         model: "Samsung S23 Ultra",
                         status: "online",
-                        lastActive: "5 min ago",
+                        lastActive: "Just now",
                         calls: [
                             { number: "+91 99887 76655", duration: "10:45", type: "incoming", time: "11:00 AM" },
                             { number: "+91 88776 65544", duration: "3:30", type: "outgoing", time: "10:15 AM" }
@@ -759,6 +830,9 @@
         window.closeModal = closeModal;
         window.toast = toast;
         window.toggleDarkMode = toggleDarkMode;
+        window.copyLink = copyLink;
+        window.shareLink = shareLink;
+        window.showQR = showQR;
 
         // ==========================================
         // INIT
@@ -766,7 +840,6 @@
         console.log('🔐 Secure Device Monitor System Loaded!');
         console.log('📋 No default credentials - Setup your admin account');
 
-        // Check if admin exists or auto login
         if (!checkAutoLogin()) {
             const credentials = getAdminCredentials();
             if (!credentials) {
