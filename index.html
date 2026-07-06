@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Device Monitor - Secure</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+        :root{--primary:#4F46E5;--primary-light:#818CF8;--bg:#F1F5F9;--card:#FFFFFF;--text:#0F172A;--text2:#64748B;--border:#E2E8F0;--success:#10B981;--danger:#EF4444;--radius:16px}
+        body.dark-mode{--bg:#0F172A;--card:#1E293B;--text:#F1F5F9;--text2:#94A3B8;--border:#334155}
+        body{background:var(--bg);color:var(--text);min-height:100vh}
+
+        /* ===== LOGIN/SETUP PAGE ===== */
+        .login-wrapper{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#1E1B4B 0%,#4F46E5 50%,#818CF8 100%)}
+        .login-box{background:rgba(255,255,255,0.05);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.1);padding:44px 36px;border-radius:24px;width:100%;max-width:420px;box-shadow:0 25px 60px rgba(0,0,0,0.3)}
+        .login-box .logo{text-align:center;font-size:28px;font-weight:800;color:#fff;margin-bottom:2px}
+        .login-box .logo span{background:linear-gradient(135deg,#fff,#818CF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .login-box .sub{text-align:center;color:rgba(255,255,255,0.5);font-size:12px;letter-spacing:0.5px;margin-bottom:24px}
+        .login-box label{color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-top:14px}
+        .login-box input{width:100%;padding:14px 18px;border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;background:rgba(255,255,255,0.06);color:#fff;font-size:14px;margin-top:4px;transition:all 0.3s}
+        .login-box input:focus{outline:none;border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.1)}
+        .login-box input::placeholder{color:rgba(255,255,255,0.3)}
+        .login-box .btn-login{width:100%;padding:16px;border:none;border-radius:12px;background:linear-gradient(135deg,#4F46E5,#818CF8);color:#fff;font-weight:600;font-size:16px;cursor:pointer;transition:all 0.3s;margin-top:20px}
+        .login-box .btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(79,70,229,0.4)}
+        .login-box .btn-secondary{width:100%;padding:14px;border:2px solid rgba(255,255,255,0.2);border-radius:12px;background:transparent;color:rgba(255,255,255,0.7);font-weight:600;font-size:14px;cursor:pointer;margin-top:10px;transition:all 0.3s}
+        .login-box .btn-secondary:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.3)}
+        .login-box .error-msg{color:#EF4444;font-size:13px;text-align:center;margin-top:10px;display:none}
+        .login-box .success-msg{color:#10B981;font-size:13px;text-align:center;margin-top:10px;display:none}
+        .login-box .toggle-link{color:rgba(255,255,255,0.5);font-size:13px;text-align:center;margin-top:14px;cursor:pointer;transition:all 0.3s}
+        .login-box .toggle-link:hover{color:#fff}
+        .login-box .divider{height:1px;background:rgba(255,255,255,0.1);margin:16px 0}
+
+        /* ===== DASHBOARD ===== */
+        .header{background:var(--card);padding:14px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+        .logo-text{font-size:22px;font-weight:800;color:var(--text)}
+        .logo-text span{background:linear-gradient(135deg,var(--primary),var(--primary-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .header-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+        .btn{padding:8px 16px;border:none;border-radius:10px;font-weight:600;font-size:12px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:6px}
+        .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff}
+        .btn-outline{background:transparent;border:2px solid var(--border);color:var(--text)}
+        .btn-danger{background:var(--danger);color:#fff}
+        .btn-success{background:var(--success);color:#fff}
+
+        .dashboard{max-width:1400px;margin:0 auto;padding:20px}
+        .welcome{margin-bottom:20px}
+        .welcome h1{font-size:26px;font-weight:800}
+        .welcome p{color:var(--text2);margin-top:4px;font-size:14px}
+
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:20px}
+        .stat-card{background:var(--card);padding:16px 18px;border-radius:var(--radius);border:1px solid var(--border)}
+        .stat-card .icon{font-size:24px;margin-bottom:4px}
+        .stat-card .label{font-size:11px;color:var(--text2);font-weight:500}
+        .stat-card .value{font-size:22px;font-weight:800;margin-top:2px}
+        .stat-card .sub{font-size:11px;color:var(--text2)}
+
+        .device-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:20px}
+        .device-card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:16px;transition:all 0.3s}
+        .device-card:hover{transform:translateY(-3px);box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+        .device-card .device-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+        .device-card .device-name{font-size:17px;font-weight:700}
+        .device-card .device-status{font-size:12px;display:flex;align-items:center;gap:4px}
+        .device-card .device-status .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+        .device-card .device-status .dot.online{background:var(--success)}
+        .device-card .device-status .dot.offline{background:var(--danger)}
+
+        .call-item{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid var(--border);font-size:13px}
+        .call-item:last-child{border-bottom:none}
+        .call-item .number{font-weight:600}
+        .call-item .duration{color:var(--text2);font-size:12px}
+        .call-item .type{font-size:12px;font-weight:600}
+        .call-item .type.incoming{color:var(--success)}
+        .call-item .type.outgoing{color:var(--primary)}
+        .call-item .type.missed{color:var(--danger)}
+
+        .msg-item{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid var(--border);font-size:13px}
+        .msg-item:last-child{border-bottom:none}
+        .msg-item .sender{font-weight:600}
+        .msg-item .msg{color:var(--text2);font-size:12px;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .msg-item .time{color:var(--text2);font-size:11px}
+
+        .app-item{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:var(--bg);border-radius:8px;font-size:12px}
+        .app-item .icon{font-size:16px}
+        .app-item .time{color:var(--text2);font-size:11px}
+        .app-item .status{font-size:10px;font-weight:600}
+        .app-item .status.active{color:var(--success)}
+        .app-item .status.inactive{color:var(--danger)}
+
+        .section-header{display:flex;justify-content:space-between;align-items:center;margin:16px 0 12px;flex-wrap:wrap;gap:10px}
+        .section-header h2{font-size:18px;font-weight:700}
+        .section-header .count{font-size:13px;color:var(--text2);font-weight:400}
+
+        .toast{position:fixed;bottom:20px;right:20px;background:var(--card);color:var(--text);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:500;z-index:9999;display:none;box-shadow:0 8px 32px rgba(0,0,0,0.12);border:1px solid var(--border);max-width:340px;animation:slideUp 0.3s ease}
+        @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);z-index:5000;display:none;align-items:center;justify-content:center;padding:20px}
+        .modal-overlay.show{display:flex}
+        .modal{background:var(--card);width:100%;max-width:500px;border-radius:var(--radius);padding:24px;animation:modalSlide 0.3s ease;max-height:90vh;overflow-y:auto}
+        @keyframes modalSlide{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}
+        .modal-close{float:right;width:34px;height:34px;border-radius:50%;border:none;background:var(--input);font-size:18px;cursor:pointer;color:var(--text)}
+        .btn-submit{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-weight:700;font-size:15px;cursor:pointer;transition:all 0.3s;margin-top:6px}
+
+        .app-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+
+        @media(max-width:768px){.dashboard{padding:14px}.device-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}.app-list{grid-template-columns:1fr}}
+        @media(max-width:480px){.stats-grid{grid-template-columns:1fr}.login-box{padding:30px 20px}}
+    </style>
+</head>
+<body>
+
+    <!-- ===== LOGIN/SETUP PAGE ===== -->
+    <div id="loginPage" class="login-wrapper">
+        <div class="login-box">
+            <div class="logo">📱 <span>Device Monitor</span></div>
+            <div class="sub">✦ SECURE ACCESS ✦</div>
+
+            <!-- Login Form -->
+            <div id="loginForm">
+                <label>📧 Email Address</label>
+                <input type="email" id="loginEmail" placeholder="Enter your email">
+                <label>🔒 Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter your password">
+                <div class="error-msg" id="loginError">❌ Invalid email or password!</div>
+                <button class="btn-login" onclick="adminLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+                <div class="toggle-link" onclick="showSetup()">🔑 First time? Setup Admin Account</div>
+            </div>
+
+            <!-- Setup Form -->
+            <div id="setupForm" style="display:none;">
+                <label>👤 Admin Name</label>
+                <input type="text" id="setupName" placeholder="Enter your name">
+                <label>📧 Email Address</label>
+                <input type="email" id="setupEmail" placeholder="Enter your email">
+                <label>🔒 Password</label>
+                <input type="password" id="setupPassword" placeholder="Create password (min 6 chars)">
+                <label>🔐 Confirm Password</label>
+                <input type="password" id="setupConfirm" placeholder="Confirm password">
+                <div class="error-msg" id="setupError">❌ Passwords don't match or invalid!</div>
+                <div class="success-msg" id="setupSuccess">✅ Account created! Please login.</div>
+                <button class="btn-login" onclick="setupAdmin()"><i class="fas fa-user-plus"></i> Create Account</button>
+                <button class="btn-secondary" onclick="showLogin()"><i class="fas fa-arrow-left"></i> Back to Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div id="dashboardPage" style="display:none;">
+        <div class="header">
+            <div class="logo-text">📱 <span>Device Monitor</span></div>
+            <div class="header-actions">
+                <span style="font-size:13px;color:var(--text2);"><i class="fas fa-user-circle"></i> <span id="userName">Admin</span></span>
+                <button class="btn btn-outline" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark</button>
+                <button class="btn btn-primary" onclick="addDevice()"><i class="fas fa-plus"></i> Add Device</button>
+                <button class="btn btn-outline" onclick="refreshData()"><i class="fas fa-sync"></i> Refresh</button>
+                <button class="btn btn-danger" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div class="welcome">
+                <h1>📊 Device Monitoring Dashboard</h1>
+                <p>Monitor calls, WhatsApp, apps, and device activity in real-time.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card"><div class="icon">📱</div><div class="label">Total Devices</div><div class="value" id="totalDevices">0</div></div>
+                <div class="stat-card"><div class="icon">📞</div><div class="label">Today's Calls</div><div class="value" id="totalCalls">0</div><div class="sub" id="callDetail">0 incoming · 0 outgoing</div></div>
+                <div class="stat-card"><div class="icon">💬</div><div class="label">WhatsApp Messages</div><div class="value" id="totalMessages">0</div></div>
+                <div class="stat-card"><div class="icon">📲</div><div class="label">Apps Used</div><div class="value" id="totalApps">0</div><div class="sub" id="appDetail">0 active</div></div>
+            </div>
+
+            <div class="section-header">
+                <h2>📱 Devices <span class="count" id="deviceCount">(0)</span></h2>
+                <button class="btn btn-primary" onclick="addDevice()"><i class="fas fa-plus"></i> Add Device</button>
+            </div>
+
+            <div class="device-grid" id="deviceGrid"></div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ===== MODAL ===== -->
+    <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+        <div class="modal" id="modalContent"></div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 🔥 SECURE LOGIN SYSTEM - NO DEFAULT
+        // ==========================================
+
+        // ==========================================
+        // ADMIN CREDENTIALS (Saved in localStorage)
+        // ==========================================
+        function getAdminCredentials() {
+            try {
+                const saved = localStorage.getItem('admin_credentials');
+                if (saved) {
+                    return JSON.parse(saved);
+                }
+                return null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function saveAdminCredentials(name, email, password) {
+            localStorage.setItem('admin_credentials', JSON.stringify({
+                name: name,
+                email: email,
+                password: password
+            }));
+        }
+
+        // ==========================================
+        // SHOW/HIDE FORMS
+        // ==========================================
+        function showSetup() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('setupForm').style.display = 'block';
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('setupError').style.display = 'none';
+            document.getElementById('setupSuccess').style.display = 'none';
+        }
+
+        function showLogin() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('setupForm').style.display = 'none';
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('setupError').style.display = 'none';
+            document.getElementById('setupSuccess').style.display = 'none';
+        }
+
+        // ==========================================
+        // SETUP ADMIN ACCOUNT
+        // ==========================================
+        function setupAdmin() {
+            const name = document.getElementById('setupName').value.trim();
+            const email = document.getElementById('setupEmail').value.trim();
+            const password = document.getElementById('setupPassword').value;
+            const confirm = document.getElementById('setupConfirm').value;
+
+            const errorEl = document.getElementById('setupError');
+            const successEl = document.getElementById('setupSuccess');
+
+            errorEl.style.display = 'none';
+            successEl.style.display = 'none';
+
+            if (!name || !email || !password || !confirm) {
+                errorEl.textContent = '❌ Please fill all fields!';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (password.length < 6) {
+                errorEl.textContent = '❌ Password must be at least 6 characters!';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (password !== confirm) {
+                errorEl.textContent = '❌ Passwords do not match!';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            // Save credentials
+            saveAdminCredentials(name, email, password);
+
+            successEl.textContent = '✅ Account created successfully! Please login.';
+            successEl.style.display = 'block';
+
+            // Clear form
+            document.getElementById('setupName').value = '';
+            document.getElementById('setupEmail').value = '';
+            document.getElementById('setupPassword').value = '';
+            document.getElementById('setupConfirm').value = '';
+
+            // Show login after 1.5 seconds
+            setTimeout(() => {
+                showLogin();
+                document.getElementById('loginEmail').value = email;
+                document.getElementById('loginPassword').value = '';
+                toast('✅ Account created! Login now.');
+            }, 1500);
+        }
+
+        // ==========================================
+        // LOGIN FUNCTION
+        // ==========================================
+        function adminLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            const errorEl = document.getElementById('loginError');
+
+            errorEl.style.display = 'none';
+
+            const credentials = getAdminCredentials();
+
+            if (!credentials) {
+                errorEl.textContent = '❌ No admin account found! Please setup first.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (email === credentials.email && password === credentials.password) {
+                // ✅ Login Success
+                errorEl.style.display = 'none';
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('dashboardPage').style.display = 'block';
+                document.getElementById('userName').textContent = credentials.name;
+
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('userName', credentials.name);
+
+                toast('✅ Welcome back, ' + credentials.name + '!');
+                initDashboard();
+            } else {
+                // ❌ Login Failed
+                errorEl.textContent = '❌ Invalid email or password!';
+                errorEl.style.display = 'block';
+                toast('❌ Invalid credentials!');
+            }
+        }
+
+        // ==========================================
+        // LOGOUT
+        // ==========================================
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('userName');
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('dashboardPage').style.display = 'none';
+            toast('👋 Logged out successfully!');
+        }
+
+        // ==========================================
+        // AUTO LOGIN CHECK
+        // ==========================================
+        function checkAutoLogin() {
+            if (sessionStorage.getItem('isLoggedIn') === 'true') {
+                const credentials = getAdminCredentials();
+                if (credentials) {
+                    document.getElementById('loginPage').style.display = 'none';
+                    document.getElementById('dashboardPage').style.display = 'block';
+                    document.getElementById('userName').textContent = credentials.name || 'Admin';
+                    initDashboard();
+                    return true;
+                } else {
+                    sessionStorage.removeItem('isLoggedIn');
+                }
+            }
+
+            // Check if any admin account exists
+            if (!getAdminCredentials()) {
+                // Show setup form
+                showSetup();
+            }
+
+            return false;
+        }
+
+        // ==========================================
+        // DEVICE MONITOR DATA
+        // ==========================================
+        let devices = [];
+        let isDarkMode = false;
+
+        function loadFromStorage() {
+            try {
+                const saved = localStorage.getItem('monitor_devices');
+                if (saved) {
+                    devices = JSON.parse(saved);
+                } else {
+                    devices = [{
+                        id: 1,
+                        name: "Aarav's iPhone",
+                        model: "iPhone 14 Pro",
+                        status: "online",
+                        lastActive: "2 min ago",
+                        calls: [
+                            { number: "+91 98765 43210", duration: "5:23", type: "incoming", time: "10:30 AM" },
+                            { number: "+91 87654 32109", duration: "2:15", type: "outgoing", time: "09:45 AM" },
+                            { number: "+91 76543 21098", duration: "0:00", type: "missed", time: "08:20 AM" }
+                        ],
+                        messages: [
+                            { sender: "Mom", message: "Coming home for lunch?", time: "11:15 AM", app: "WhatsApp" },
+                            { sender: "Rahul", message: "Game at 4pm?", time: "10:45 AM", app: "WhatsApp" },
+                            { sender: "Priya", message: "Ok see you there!", time: "09:30 AM", app: "WhatsApp" }
+                        ],
+                        apps: [
+                            { name: "WhatsApp", icon: "fab fa-whatsapp", time: "45m", active: true },
+                            { name: "Instagram", icon: "fab fa-instagram", time: "32m", active: true },
+                            { name: "YouTube", icon: "fab fa-youtube", time: "28m", active: true },
+                            { name: "Snapchat", icon: "fab fa-snapchat", time: "15m", active: false },
+                            { name: "TikTok", icon: "fab fa-tiktok", time: "12m", active: false }
+                        ]
+                    }, {
+                        id: 2,
+                        name: "Ananya's Samsung",
+                        model: "Samsung S23 Ultra",
+                        status: "online",
+                        lastActive: "5 min ago",
+                        calls: [
+                            { number: "+91 99887 76655", duration: "10:45", type: "incoming", time: "11:00 AM" },
+                            { number: "+91 88776 65544", duration: "3:30", type: "outgoing", time: "10:15 AM" }
+                        ],
+                        messages: [
+                            { sender: "Dad", message: "How's school?", time: "10:30 AM", app: "WhatsApp" },
+                            { sender: "Sneha", message: "Did you finish homework?", time: "09:00 AM", app: "WhatsApp" }
+                        ],
+                        apps: [
+                            { name: "WhatsApp", icon: "fab fa-whatsapp", time: "38m", active: true },
+                            { name: "Instagram", icon: "fab fa-instagram", time: "25m", active: true },
+                            { name: "Spotify", icon: "fab fa-spotify", time: "20m", active: false }
+                        ]
+                    }];
+                    saveToStorage();
+                }
+            } catch (e) { devices = []; }
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('monitor_devices', JSON.stringify(devices));
+        }
+
+        function renderDevices() {
+            const grid = document.getElementById('deviceGrid');
+            grid.innerHTML = '';
+
+            if (devices.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text2);">
+                        <div style="font-size:48px;margin-bottom:12px;">📱</div>
+                        <p>No devices added. Click "Add Device" to start monitoring.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            devices.forEach(device => {
+                const card = document.createElement('div');
+                card.className = 'device-card';
+                card.innerHTML = `
+                    <div class="device-header">
+                        <div>
+                            <div class="device-name">${device.name}</div>
+                            <div style="font-size:12px;color:var(--text2);">${device.model}</div>
+                        </div>
+                        <div class="device-status">
+                            <span class="dot ${device.status === 'online' ? 'online' : 'offline'}"></span>
+                            ${device.status} · ${device.lastActive}
+                        </div>
+                    </div>
+
+                    <div style="margin:6px 0;">
+                        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px;">
+                            <span>📞 Recent Calls</span>
+                            <span>${device.calls.length} calls</span>
+                        </div>
+                        ${device.calls.slice(0,3).map(call => `
+                            <div class="call-item">
+                                <span class="number">${call.number}</span>
+                                <span class="duration">${call.duration}</span>
+                                <span class="type ${call.type}">${call.type}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div style="margin:6px 0;">
+                        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px;">
+                            <span>💬 WhatsApp</span>
+                            <span>${device.messages.length} messages</span>
+                        </div>
+                        ${device.messages.slice(0,3).map(msg => `
+                            <div class="msg-item">
+                                <span class="sender">${msg.sender}</span>
+                                <span class="msg">${msg.message}</span>
+                                <span class="time">${msg.time}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div style="margin:6px 0;">
+                        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px;">
+                            <span>📲 Apps</span>
+                            <span>${device.apps.filter(a => a.active).length} active</span>
+                        </div>
+                        <div class="app-list">
+                            ${device.apps.map(app => `
+                                <div class="app-item">
+                                    <div><i class="${app.icon}"></i> ${app.name}</div>
+                                    <div>
+                                        <span class="status ${app.active ? 'active' : 'inactive'}">${app.active ? '●' : '○'}</span>
+                                        <span class="time">${app.time}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div style="display:flex;gap:6px;margin-top:8px;">
+                        <button class="btn btn-primary" onclick="viewDeviceDetail(${device.id})" style="flex:1;justify-content:center;padding:6px 12px;font-size:11px;">
+                            <i class="fas fa-eye"></i> Full Details
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteDevice(${device.id})" style="padding:6px 12px;font-size:11px;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            document.getElementById('deviceCount').textContent = `(${devices.length})`;
+        }
+
+        function updateStats() {
+            const total = devices.length;
+            const totalCalls = devices.reduce((sum, d) => sum + d.calls.length, 0);
+            const totalMsgs = devices.reduce((sum, d) => sum + d.messages.length, 0);
+            const totalApps = devices.reduce((sum, d) => sum + d.apps.length, 0);
+            const activeApps = devices.reduce((sum, d) => sum + d.apps.filter(a => a.active).length, 0);
+
+            document.getElementById('totalDevices').textContent = total;
+            document.getElementById('totalCalls').textContent = totalCalls;
+            document.getElementById('totalMessages').textContent = totalMsgs;
+            document.getElementById('totalApps').textContent = totalApps;
+
+            const incoming = devices.reduce((sum, d) => sum + d.calls.filter(c => c.type === 'incoming').length, 0);
+            const outgoing = devices.reduce((sum, d) => sum + d.calls.filter(c => c.type === 'outgoing').length, 0);
+            document.getElementById('callDetail').textContent = `${incoming} incoming · ${outgoing} outgoing`;
+            document.getElementById('appDetail').textContent = `${activeApps} active`;
+            document.getElementById('deviceCount').textContent = `(${total})`;
+        }
+
+        function refreshData() {
+            devices.forEach(device => {
+                device.lastActive = 'Just now';
+                device.status = 'online';
+                if (Math.random() > 0.5) {
+                    device.calls.unshift({
+                        number: "+91 " + Math.floor(1000000000 + Math.random() * 9000000000),
+                        duration: Math.floor(Math.random() * 300) + "s",
+                        type: ['incoming', 'outgoing', 'missed'][Math.floor(Math.random() * 3)],
+                        time: new Date().toLocaleTimeString()
+                    });
+                    if (device.calls.length > 10) device.calls.pop();
+                }
+                if (Math.random() > 0.5) {
+                    const names = ['Mom', 'Dad', 'Friend', 'Teacher', 'Sister'];
+                    device.messages.unshift({
+                        sender: names[Math.floor(Math.random() * names.length)],
+                        message: ['Ok', 'Coming', 'Done', 'See you', 'Thanks'][Math.floor(Math.random() * 5)],
+                        time: new Date().toLocaleTimeString(),
+                        app: 'WhatsApp'
+                    });
+                    if (device.messages.length > 10) device.messages.pop();
+                }
+                device.apps.forEach(app => {
+                    app.active = Math.random() > 0.3;
+                    if (app.active) app.time = Math.floor(Math.random() * 60) + 'm';
+                });
+            });
+            saveToStorage();
+            renderDevices();
+            updateStats();
+            toast('🔄 Data refreshed!');
+        }
+
+        function addDevice() {
+            const html = `
+                <button class="modal-close" onclick="closeModal()">✕</button>
+                <h2>📱 Add Device</h2>
+                <div class="field" style="margin-bottom:14px;">
+                    <label style="font-weight:600;font-size:13px;color:var(--text2);display:block;margin-bottom:4px;">Device Name *</label>
+                    <input type="text" id="deviceName" placeholder="e.g., Aarav's iPhone" style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;background:var(--input);font-size:13px;color:var(--text);outline:none;">
+                </div>
+                <div class="field" style="margin-bottom:14px;">
+                    <label style="font-weight:600;font-size:13px;color:var(--text2);display:block;margin-bottom:4px;">Device Model</label>
+                    <input type="text" id="deviceModel" placeholder="e.g., iPhone 14 Pro" value="Smartphone" style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;background:var(--input);font-size:13px;color:var(--text);outline:none;">
+                </div>
+                <div class="field" style="margin-bottom:14px;">
+                    <label style="font-weight:600;font-size:13px;color:var(--text2);display:block;margin-bottom:4px;">Status</label>
+                    <select id="deviceStatus" style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;background:var(--input);font-size:13px;color:var(--text);outline:none;">
+                        <option value="online">Online</option>
+                        <option value="offline">Offline</option>
+                    </select>
+                </div>
+                <button class="btn-submit" onclick="addDeviceSubmit()"><i class="fas fa-plus"></i> Add Device</button>
+                <button class="btn-secondary" onclick="closeModal()" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:10px;background:transparent;color:var(--text);font-weight:600;font-size:13px;cursor:pointer;margin-top:6px;">Cancel</button>
+            `;
+            openModal(html);
+        }
+
+        function addDeviceSubmit() {
+            const name = document.getElementById('deviceName').value.trim();
+            const model = document.getElementById('deviceModel').value.trim() || 'Smartphone';
+            const status = document.getElementById('deviceStatus').value;
+
+            if (!name) { toast('⚠️ Please enter device name'); return; }
+
+            devices.push({
+                id: Date.now(),
+                name: name,
+                model: model,
+                status: status,
+                lastActive: 'Just now',
+                calls: [{ number: "+91 98765 43210", duration: "0:00", type: "incoming", time: "Just now" }],
+                messages: [{ sender: "System", message: "Device connected", time: "Just now", app: "System" }],
+                apps: [
+                    { name: "WhatsApp", icon: "fab fa-whatsapp", time: "0m", active: false },
+                    { name: "Instagram", icon: "fab fa-instagram", time: "0m", active: false }
+                ]
+            });
+
+            saveToStorage();
+            renderDevices();
+            updateStats();
+            closeModal();
+            toast('✅ Device added!');
+        }
+
+        function viewDeviceDetail(id) {
+            const device = devices.find(d => d.id === id);
+            if (!device) return;
+
+            const callsHtml = device.calls.map(c => `
+                <div class="call-item" style="padding:8px 0;">
+                    <span class="number">${c.number}</span>
+                    <span class="duration">${c.duration}</span>
+                    <span class="type ${c.type}">${c.type}</span>
+                    <span style="font-size:11px;color:var(--text2);">${c.time}</span>
+                </div>
+            `).join('');
+
+            const msgsHtml = device.messages.map(m => `
+                <div class="msg-item" style="padding:8px 0;">
+                    <span class="sender">${m.sender}</span>
+                    <span class="msg">${m.message}</span>
+                    <span style="font-size:11px;color:var(--text2);">${m.time}</span>
+                </div>
+            `).join('');
+
+            const html = `
+                <button class="modal-close" onclick="closeModal()">✕</button>
+                <h2>📱 ${device.name}</h2>
+                <div style="display:grid;gap:3px;margin-bottom:12px;font-size:13px;color:var(--text2);">
+                    <p><strong>Model:</strong> ${device.model}</p>
+                    <p><strong>Status:</strong> ${device.status}</p>
+                    <p><strong>Last Active:</strong> ${device.lastActive}</p>
+                </div>
+
+                <h3 style="margin:12px 0 6px;font-size:15px;">📞 All Calls (${device.calls.length})</h3>
+                ${callsHtml || '<p style="color:var(--text2);font-size:13px;">No calls yet</p>'}
+
+                <h3 style="margin:12px 0 6px;font-size:15px;">💬 All WhatsApp Messages (${device.messages.length})</h3>
+                ${msgsHtml || '<p style="color:var(--text2);font-size:13px;">No messages yet</p>'}
+
+                <h3 style="margin:12px 0 6px;font-size:15px;">📲 Apps</h3>
+                <div class="app-list" style="grid-template-columns:1fr;">
+                    ${device.apps.map(app => `
+                        <div class="app-item" style="padding:8px 12px;">
+                            <div><i class="${app.icon}"></i> ${app.name}</div>
+                            <div>
+                                <span class="status ${app.active ? 'active' : 'inactive'}">${app.active ? '● Active' : '○ Inactive'}</span>
+                                <span class="time">${app.time}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <button class="btn-submit" onclick="closeModal()">Close</button>
+            `;
+            openModal(html);
+        }
+
+        function deleteDevice(id) {
+            if (!confirm('Delete this device?')) return;
+            devices = devices.filter(d => d.id !== id);
+            saveToStorage();
+            renderDevices();
+            updateStats();
+            toast('🗑️ Device removed');
+        }
+
+        // ==========================================
+        // UTILITY FUNCTIONS
+        // ==========================================
+        function openModal(html) {
+            document.getElementById('modalContent').innerHTML = html;
+            document.getElementById('modalOverlay').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('show');
+        }
+
+        function toast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.display = 'block';
+            clearTimeout(t._timeout);
+            t._timeout = setTimeout(() => t.style.display = 'none', 2500);
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('monitor_darkmode', document.body.classList.contains('dark-mode'));
+        }
+
+        function initDashboard() {
+            loadFromStorage();
+            renderDevices();
+            updateStats();
+
+            if (localStorage.getItem('monitor_darkmode') === 'true') {
+                document.body.classList.add('dark-mode');
+            }
+
+            setInterval(() => {
+                if (document.getElementById('dashboardPage').style.display !== 'none') {
+                    refreshData();
+                }
+            }, 15000);
+        }
+
+        // ==========================================
+        // KEYBOARD SHORTCUTS
+        // ==========================================
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                if (document.getElementById('loginPage').style.display !== 'none') {
+                    if (document.getElementById('loginForm').style.display !== 'none') {
+                        adminLogin();
+                    } else {
+                        setupAdmin();
+                    }
+                }
+            }
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // ==========================================
+        // EXPOSE FUNCTIONS
+        // ==========================================
+        window.adminLogin = adminLogin;
+        window.logout = logout;
+        window.setupAdmin = setupAdmin;
+        window.showSetup = showSetup;
+        window.showLogin = showLogin;
+        window.addDevice = addDevice;
+        window.addDeviceSubmit = addDeviceSubmit;
+        window.viewDeviceDetail = viewDeviceDetail;
+        window.deleteDevice = deleteDevice;
+        window.refreshData = refreshData;
+        window.closeModal = closeModal;
+        window.toast = toast;
+        window.toggleDarkMode = toggleDarkMode;
+
+        // ==========================================
+        // INIT
+        // ==========================================
+        console.log('🔐 Secure Device Monitor System Loaded!');
+        console.log('📋 No default credentials - Setup your admin account');
+
+        // Check if admin exists or auto login
+        if (!checkAutoLogin()) {
+            const credentials = getAdminCredentials();
+            if (!credentials) {
+                console.log('🔑 Please setup your admin account');
+                showSetup();
+            } else {
+                console.log('👤 Admin account exists. Please login.');
+                showLogin();
+            }
+        }
+    </script>
+
+</body>
+</html>
