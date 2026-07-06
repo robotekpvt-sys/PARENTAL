@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Device Monitor - Secure</title>
+    <title>Device Monitor - Live</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -12,51 +12,24 @@
         body.dark-mode{--bg:#0F172A;--card:#1E293B;--text:#F1F5F9;--text2:#94A3B8;--border:#334155}
         body{background:var(--bg);color:var(--text);min-height:100vh}
 
-        /* ===== LOGIN/SETUP PAGE ===== */
-        .login-wrapper{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#1E1B4B 0%,#4F46E5 50%,#818CF8 100%)}
-        .login-box{background:rgba(255,255,255,0.05);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.1);padding:44px 36px;border-radius:24px;width:100%;max-width:420px;box-shadow:0 25px 60px rgba(0,0,0,0.3)}
-        .login-box .logo{text-align:center;font-size:28px;font-weight:800;color:#fff;margin-bottom:2px}
-        .login-box .logo span{background:linear-gradient(135deg,#fff,#818CF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .login-box .sub{text-align:center;color:rgba(255,255,255,0.5);font-size:12px;letter-spacing:0.5px;margin-bottom:24px}
-        .login-box label{color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;display:block;margin-top:14px}
-        .login-box input{width:100%;padding:14px 18px;border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;background:rgba(255,255,255,0.06);color:#fff;font-size:14px;margin-top:4px;transition:all 0.3s}
-        .login-box input:focus{outline:none;border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.1)}
-        .login-box input::placeholder{color:rgba(255,255,255,0.3)}
-        .login-box .btn-login{width:100%;padding:16px;border:none;border-radius:12px;background:linear-gradient(135deg,#4F46E5,#818CF8);color:#fff;font-weight:600;font-size:16px;cursor:pointer;transition:all 0.3s;margin-top:20px}
-        .login-box .btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(79,70,229,0.4)}
-        .login-box .btn-secondary{width:100%;padding:14px;border:2px solid rgba(255,255,255,0.2);border-radius:12px;background:transparent;color:rgba(255,255,255,0.7);font-weight:600;font-size:14px;cursor:pointer;margin-top:10px;transition:all 0.3s}
-        .login-box .btn-secondary:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.3)}
-        .login-box .error-msg{color:#EF4444;font-size:13px;text-align:center;margin-top:10px;display:none}
-        .login-box .success-msg{color:#10B981;font-size:13px;text-align:center;margin-top:10px;display:none}
-        .login-box .toggle-link{color:rgba(255,255,255,0.5);font-size:13px;text-align:center;margin-top:14px;cursor:pointer;transition:all 0.3s}
-        .login-box .toggle-link:hover{color:#fff}
-        .login-box .divider{height:1px;background:rgba(255,255,255,0.1);margin:16px 0}
-
-        /* ===== SHARE LINK BAR ===== */
-        .share-bar{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:14px 18px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
-        .share-bar .link{font-size:14px;color:var(--text);word-break:break-all;flex:1}
-        .share-bar .link .label{font-size:12px;color:var(--text2);font-weight:500;margin-right:8px}
-        .share-bar .actions{display:flex;gap:8px;flex-wrap:wrap}
-        .share-bar .actions .btn{padding:6px 14px;border:none;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:6px}
-        .share-bar .actions .btn-copy{background:var(--primary);color:#fff}
-        .share-bar .actions .btn-copy:hover{transform:scale(1.05);box-shadow:0 4px 16px rgba(79,70,229,0.3)}
-        .share-bar .actions .btn-share{background:#25D366;color:#fff}
-        .share-bar .actions .btn-share:hover{transform:scale(1.05);box-shadow:0 4px 16px rgba(37,211,102,0.3)}
-        .share-bar .actions .btn-qr{background:var(--text2);color:#fff}
-        .share-bar .actions .btn-qr:hover{transform:scale(1.05)}
-
-        /* ===== DASHBOARD ===== */
         .header{background:var(--card);padding:14px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
         .logo-text{font-size:22px;font-weight:800;color:var(--text)}
         .logo-text span{background:linear-gradient(135deg,var(--primary),var(--primary-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .header-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
         .btn{padding:8px 16px;border:none;border-radius:10px;font-weight:600;font-size:12px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:6px}
         .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff}
-        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(79,70,229,0.3)}
         .btn-outline{background:transparent;border:2px solid var(--border);color:var(--text)}
-        .btn-outline:hover{background:var(--border)}
         .btn-danger{background:var(--danger);color:#fff}
-        .btn-danger:hover{background:#DC2626}
+
+        /* ===== SHARE BAR ===== */
+        .share-bar{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:14px 18px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+        .share-bar .link{font-size:14px;color:var(--text);word-break:break-all;flex:1}
+        .share-bar .link .label{font-size:12px;color:var(--text2);font-weight:500;margin-right:8px}
+        .share-bar .actions{display:flex;gap:8px;flex-wrap:wrap}
+        .share-bar .actions .btn{padding:6px 14px;border:none;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:6px}
+        .share-bar .actions .btn-copy{background:var(--primary);color:#fff}
+        .share-bar .actions .btn-share{background:#25D366;color:#fff}
+        .share-bar .actions .btn-qr{background:var(--text2);color:#fff}
 
         .dashboard{max-width:1400px;margin:0 auto;padding:20px}
         .welcome{margin-bottom:16px}
@@ -65,7 +38,6 @@
 
         .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:20px}
         .stat-card{background:var(--card);padding:16px 18px;border-radius:var(--radius);border:1px solid var(--border)}
-        .stat-card:hover{transform:translateY(-3px);box-shadow:0 4px 24px rgba(0,0,0,0.06)}
         .stat-card .icon{font-size:24px;margin-bottom:4px}
         .stat-card .label{font-size:11px;color:var(--text2);font-weight:500}
         .stat-card .value{font-size:22px;font-weight:800;margin-top:2px}
@@ -107,6 +79,8 @@
         .section-header h2{font-size:18px;font-weight:700}
         .section-header .count{font-size:13px;color:var(--text2);font-weight:400}
 
+        .app-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+
         .toast{position:fixed;bottom:20px;right:20px;background:var(--card);color:var(--text);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:500;z-index:9999;display:none;box-shadow:0 8px 32px rgba(0,0,0,0.12);border:1px solid var(--border);max-width:340px;animation:slideUp 0.3s ease}
         @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
 
@@ -117,95 +91,58 @@
         .modal-close{float:right;width:34px;height:34px;border-radius:50%;border:none;background:var(--input);font-size:18px;cursor:pointer;color:var(--text)}
         .btn-submit{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-weight:700;font-size:15px;cursor:pointer;transition:all 0.3s;margin-top:6px}
 
-        .app-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
-
         @media(max-width:768px){.dashboard{padding:14px}.device-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}.app-list{grid-template-columns:1fr}.share-bar{flex-direction:column;align-items:stretch}}
-        @media(max-width:480px){.stats-grid{grid-template-columns:1fr}.login-box{padding:30px 20px}.share-bar .actions{flex-direction:column}.share-bar .actions .btn{justify-content:center}}
+        @media(max-width:480px){.stats-grid{grid-template-columns:1fr}.share-bar .actions{flex-direction:column}.share-bar .actions .btn{justify-content:center}}
     </style>
 </head>
 <body>
 
-    <!-- ===== LOGIN/SETUP PAGE ===== -->
-    <div id="loginPage" class="login-wrapper">
-        <div class="login-box">
-            <div class="logo">📱 <span>Device Monitor</span></div>
-            <div class="sub">✦ SECURE ACCESS ✦</div>
-
-            <!-- Login Form -->
-            <div id="loginForm">
-                <label>📧 Email Address</label>
-                <input type="email" id="loginEmail" placeholder="Enter your email">
-                <label>🔒 Password</label>
-                <input type="password" id="loginPassword" placeholder="Enter your password">
-                <div class="error-msg" id="loginError">❌ Invalid email or password!</div>
-                <button class="btn-login" onclick="adminLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
-                <div class="toggle-link" onclick="showSetup()">🔑 First time? Setup Admin Account</div>
-            </div>
-
-            <!-- Setup Form -->
-            <div id="setupForm" style="display:none;">
-                <label>👤 Admin Name</label>
-                <input type="text" id="setupName" placeholder="Enter your name">
-                <label>📧 Email Address</label>
-                <input type="email" id="setupEmail" placeholder="Enter your email">
-                <label>🔒 Password</label>
-                <input type="password" id="setupPassword" placeholder="Create password (min 6 chars)">
-                <label>🔐 Confirm Password</label>
-                <input type="password" id="setupConfirm" placeholder="Confirm password">
-                <div class="error-msg" id="setupError">❌ Passwords don't match or invalid!</div>
-                <div class="success-msg" id="setupSuccess">✅ Account created! Please login.</div>
-                <button class="btn-login" onclick="setupAdmin()"><i class="fas fa-user-plus"></i> Create Account</button>
-                <button class="btn-secondary" onclick="showLogin()"><i class="fas fa-arrow-left"></i> Back to Login</button>
-            </div>
+    <!-- ===== HEADER ===== -->
+    <div class="header">
+        <div class="logo-text">📱 <span>Device Monitor</span></div>
+        <div class="header-actions">
+            <button class="btn btn-outline" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark</button>
+            <button class="btn btn-primary" onclick="addDevice()"><i class="fas fa-plus"></i> Add Device</button>
+            <button class="btn btn-outline" onclick="refreshData()"><i class="fas fa-sync"></i> Refresh</button>
+            <button class="btn btn-danger" onclick="resetAll()"><i class="fas fa-undo"></i> Reset</button>
         </div>
     </div>
 
     <!-- ===== DASHBOARD ===== -->
-    <div id="dashboardPage" style="display:none;">
-        <div class="header">
-            <div class="logo-text">📱 <span>Device Monitor</span></div>
-            <div class="header-actions">
-                <span style="font-size:13px;color:var(--text2);"><i class="fas fa-user-circle"></i> <span id="userName">Admin</span></span>
-                <button class="btn btn-outline" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark</button>
-                <button class="btn btn-primary" onclick="addDevice()"><i class="fas fa-plus"></i> Add Device</button>
-                <button class="btn btn-outline" onclick="refreshData()"><i class="fas fa-sync"></i> Refresh</button>
-                <button class="btn btn-danger" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    <div class="dashboard">
+
+        <!-- ===== SHARE BAR ===== -->
+        <div class="share-bar">
+            <div class="link">
+                <span class="label">🔗 Share Link:</span>
+                <span id="shareLink">Loading...</span>
+            </div>
+            <div class="actions">
+                <button class="btn btn-copy" onclick="copyLink()"><i class="fas fa-copy"></i> Copy</button>
+                <button class="btn btn-share" onclick="shareLink()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                <button class="btn btn-qr" onclick="showQR()"><i class="fas fa-qrcode"></i> QR</button>
             </div>
         </div>
 
-        <div class="dashboard">
-            <!-- ===== SHARE BAR ===== -->
-            <div class="share-bar">
-                <div class="link">
-                    <span class="label">🔗 Share Link:</span>
-                    <span id="shareLink">Loading...</span>
-                </div>
-                <div class="actions">
-                    <button class="btn btn-copy" onclick="copyLink()"><i class="fas fa-copy"></i> Copy</button>
-                    <button class="btn btn-share" onclick="shareLink()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-                    <button class="btn btn-qr" onclick="showQR()"><i class="fas fa-qrcode"></i> QR</button>
-                </div>
-            </div>
-
-            <div class="welcome">
-                <h1>📊 Device Monitoring Dashboard</h1>
-                <p>Monitor calls, WhatsApp, apps, and device activity in real-time.</p>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card"><div class="icon">📱</div><div class="label">Total Devices</div><div class="value" id="totalDevices">0</div></div>
-                <div class="stat-card"><div class="icon">📞</div><div class="label">Today's Calls</div><div class="value" id="totalCalls">0</div><div class="sub" id="callDetail">0 incoming · 0 outgoing</div></div>
-                <div class="stat-card"><div class="icon">💬</div><div class="label">WhatsApp Messages</div><div class="value" id="totalMessages">0</div></div>
-                <div class="stat-card"><div class="icon">📲</div><div class="label">Apps Used</div><div class="value" id="totalApps">0</div><div class="sub" id="appDetail">0 active</div></div>
-            </div>
-
-            <div class="section-header">
-                <h2>📱 Devices <span class="count" id="deviceCount">(0)</span></h2>
-                <button class="btn btn-primary" onclick="addDevice()"><i class="fas fa-plus"></i> Add Device</button>
-            </div>
-
-            <div class="device-grid" id="deviceGrid"></div>
+        <div class="welcome">
+            <h1>📊 Device Monitoring Dashboard</h1>
+            <p>Real-time monitoring of calls, WhatsApp, apps, and device activity.</p>
         </div>
+
+        <div class="stats-grid">
+            <div class="stat-card"><div class="icon">📱</div><div class="label">Total Devices</div><div class="value" id="totalDevices">0</div></div>
+            <div class="stat-card"><div class="icon">📞</div><div class="label">Today's Calls</div><div class="value" id="totalCalls">0</div><div class="sub" id="callDetail">0 incoming · 0 outgoing</div></div>
+            <div class="stat-card"><div class="icon">💬</div><div class="label">WhatsApp Messages</div><div class="value" id="totalMessages">0</div></div>
+            <div class="stat-card"><div class="icon">📲</div><div class="label">Apps Used</div><div class="value" id="totalApps">0</div><div class="sub" id="appDetail">0 active</div></div>
+        </div>
+
+        <div class="section-header">
+            <h2>📱 Devices <span class="count" id="deviceCount">(0)</span></h2>
+            <button class="btn btn-primary" onclick="addDevice()"><i class="fas fa-plus"></i> Add Device</button>
+        </div>
+
+        <div class="device-grid" id="deviceGrid"></div>
+
     </div>
 
     <!-- ===== TOAST ===== -->
@@ -218,173 +155,30 @@
 
     <script>
         // ==========================================
-        // 🔥 SECURE LOGIN SYSTEM - NO DEFAULT
+        // 🔥 NO LOGIN - DIRECT ACCESS
         // ==========================================
 
-        // ==========================================
-        // ADMIN CREDENTIALS (Saved in localStorage)
-        // ==========================================
-        function getAdminCredentials() {
-            try {
-                const saved = localStorage.getItem('admin_credentials');
-                if (saved) {
-                    return JSON.parse(saved);
-                }
-                return null;
-            } catch (e) {
-                return null;
-            }
-        }
-
-        function saveAdminCredentials(name, email, password) {
-            localStorage.setItem('admin_credentials', JSON.stringify({
-                name: name,
-                email: email,
-                password: password
-            }));
-        }
+        let devices = [];
+        let isDarkMode = false;
 
         // ==========================================
-        // SHOW/HIDE FORMS
+        // INIT
         // ==========================================
-        function showSetup() {
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('setupForm').style.display = 'block';
-            document.getElementById('loginError').style.display = 'none';
-            document.getElementById('setupError').style.display = 'none';
-            document.getElementById('setupSuccess').style.display = 'none';
-        }
+        function init() {
+            loadFromStorage();
+            renderDevices();
+            updateStats();
+            updateShareLink();
 
-        function showLogin() {
-            document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('setupForm').style.display = 'none';
-            document.getElementById('loginError').style.display = 'none';
-            document.getElementById('setupError').style.display = 'none';
-            document.getElementById('setupSuccess').style.display = 'none';
-        }
-
-        // ==========================================
-        // SETUP ADMIN ACCOUNT
-        // ==========================================
-        function setupAdmin() {
-            const name = document.getElementById('setupName').value.trim();
-            const email = document.getElementById('setupEmail').value.trim();
-            const password = document.getElementById('setupPassword').value;
-            const confirm = document.getElementById('setupConfirm').value;
-
-            const errorEl = document.getElementById('setupError');
-            const successEl = document.getElementById('setupSuccess');
-
-            errorEl.style.display = 'none';
-            successEl.style.display = 'none';
-
-            if (!name || !email || !password || !confirm) {
-                errorEl.textContent = '❌ Please fill all fields!';
-                errorEl.style.display = 'block';
-                return;
+            if (localStorage.getItem('monitor_darkmode') === 'true') {
+                document.body.classList.add('dark-mode');
+                isDarkMode = true;
             }
 
-            if (password.length < 6) {
-                errorEl.textContent = '❌ Password must be at least 6 characters!';
-                errorEl.style.display = 'block';
-                return;
-            }
-
-            if (password !== confirm) {
-                errorEl.textContent = '❌ Passwords do not match!';
-                errorEl.style.display = 'block';
-                return;
-            }
-
-            saveAdminCredentials(name, email, password);
-
-            successEl.textContent = '✅ Account created successfully! Please login.';
-            successEl.style.display = 'block';
-
-            document.getElementById('setupName').value = '';
-            document.getElementById('setupEmail').value = '';
-            document.getElementById('setupPassword').value = '';
-            document.getElementById('setupConfirm').value = '';
-
-            setTimeout(() => {
-                showLogin();
-                document.getElementById('loginEmail').value = email;
-                document.getElementById('loginPassword').value = '';
-                toast('✅ Account created! Login now.');
-            }, 1500);
-        }
-
-        // ==========================================
-        // LOGIN FUNCTION
-        // ==========================================
-        function adminLogin() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value.trim();
-            const errorEl = document.getElementById('loginError');
-
-            errorEl.style.display = 'none';
-
-            const credentials = getAdminCredentials();
-
-            if (!credentials) {
-                errorEl.textContent = '❌ No admin account found! Please setup first.';
-                errorEl.style.display = 'block';
-                return;
-            }
-
-            if (email === credentials.email && password === credentials.password) {
-                errorEl.style.display = 'none';
-                document.getElementById('loginPage').style.display = 'none';
-                document.getElementById('dashboardPage').style.display = 'block';
-                document.getElementById('userName').textContent = credentials.name;
-
-                sessionStorage.setItem('isLoggedIn', 'true');
-                sessionStorage.setItem('userName', credentials.name);
-
-                updateShareLink();
-                toast('✅ Welcome back, ' + credentials.name + '!');
-                initDashboard();
-            } else {
-                errorEl.textContent = '❌ Invalid email or password!';
-                errorEl.style.display = 'block';
-                toast('❌ Invalid credentials!');
-            }
-        }
-
-        // ==========================================
-        // LOGOUT
-        // ==========================================
-        function logout() {
-            sessionStorage.removeItem('isLoggedIn');
-            sessionStorage.removeItem('userName');
-            document.getElementById('loginPage').style.display = 'flex';
-            document.getElementById('dashboardPage').style.display = 'none';
-            toast('👋 Logged out successfully!');
-        }
-
-        // ==========================================
-        // AUTO LOGIN CHECK
-        // ==========================================
-        function checkAutoLogin() {
-            if (sessionStorage.getItem('isLoggedIn') === 'true') {
-                const credentials = getAdminCredentials();
-                if (credentials) {
-                    document.getElementById('loginPage').style.display = 'none';
-                    document.getElementById('dashboardPage').style.display = 'block';
-                    document.getElementById('userName').textContent = credentials.name || 'Admin';
-                    updateShareLink();
-                    initDashboard();
-                    return true;
-                } else {
-                    sessionStorage.removeItem('isLoggedIn');
-                }
-            }
-
-            if (!getAdminCredentials()) {
-                showSetup();
-            }
-
-            return false;
+            // Auto refresh every 10 seconds
+            setInterval(() => {
+                refreshData();
+            }, 10000);
         }
 
         // ==========================================
@@ -400,7 +194,6 @@
             navigator.clipboard.writeText(link).then(() => {
                 toast('✅ Link copied to clipboard!');
             }).catch(() => {
-                // Fallback
                 const input = document.createElement('input');
                 input.value = link;
                 document.body.appendChild(input);
@@ -426,7 +219,7 @@
                 <h2 style="margin-bottom:12px;">📱 Scan QR Code</h2>
                 <div style="text-align:center;">
                     <img src="${qrUrl}" style="max-width:250px;border-radius:12px;border:2px solid var(--border);">
-                    <p style="margin-top:12px;color:var(--text2);font-size:13px;">Scan this QR code to access the dashboard</p>
+                    <p style="margin-top:12px;color:var(--text2);font-size:13px;">Scan to access the dashboard</p>
                     <div style="margin-top:8px;font-size:12px;color:var(--text2);word-break:break-all;">${link}</div>
                 </div>
                 <button class="btn-submit" onclick="closeModal()" style="margin-top:16px;">Close</button>
@@ -435,11 +228,8 @@
         }
 
         // ==========================================
-        // DEVICE MONITOR DATA
+        // STORAGE
         // ==========================================
-        let devices = [];
-        let isDarkMode = false;
-
         function loadFromStorage() {
             try {
                 const saved = localStorage.getItem('monitor_devices');
@@ -498,6 +288,9 @@
             localStorage.setItem('monitor_devices', JSON.stringify(devices));
         }
 
+        // ==========================================
+        // RENDER DEVICES
+        // ==========================================
         function renderDevices() {
             const grid = document.getElementById('deviceGrid');
             grid.innerHTML = '';
@@ -757,6 +550,15 @@
             toast('🗑️ Device removed');
         }
 
+        function resetAll() {
+            if (!confirm('Reset all data? This cannot be undone!')) return;
+            localStorage.removeItem('monitor_devices');
+            devices = [];
+            renderDevices();
+            updateStats();
+            toast('🔄 All data reset!');
+        }
+
         // ==========================================
         // UTILITY FUNCTIONS
         // ==========================================
@@ -782,51 +584,22 @@
             localStorage.setItem('monitor_darkmode', document.body.classList.contains('dark-mode'));
         }
 
-        function initDashboard() {
-            loadFromStorage();
-            renderDevices();
-            updateStats();
-
-            if (localStorage.getItem('monitor_darkmode') === 'true') {
-                document.body.classList.add('dark-mode');
-            }
-
-            setInterval(() => {
-                if (document.getElementById('dashboardPage').style.display !== 'none') {
-                    refreshData();
-                }
-            }, 15000);
-        }
-
         // ==========================================
         // KEYBOARD SHORTCUTS
         // ==========================================
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                if (document.getElementById('loginPage').style.display !== 'none') {
-                    if (document.getElementById('loginForm').style.display !== 'none') {
-                        adminLogin();
-                    } else {
-                        setupAdmin();
-                    }
-                }
-            }
             if (e.key === 'Escape') closeModal();
         });
 
         // ==========================================
         // EXPOSE FUNCTIONS
         // ==========================================
-        window.adminLogin = adminLogin;
-        window.logout = logout;
-        window.setupAdmin = setupAdmin;
-        window.showSetup = showSetup;
-        window.showLogin = showLogin;
         window.addDevice = addDevice;
         window.addDeviceSubmit = addDeviceSubmit;
         window.viewDeviceDetail = viewDeviceDetail;
         window.deleteDevice = deleteDevice;
         window.refreshData = refreshData;
+        window.resetAll = resetAll;
         window.closeModal = closeModal;
         window.toast = toast;
         window.toggleDarkMode = toggleDarkMode;
@@ -837,19 +610,11 @@
         // ==========================================
         // INIT
         // ==========================================
-        console.log('🔐 Secure Device Monitor System Loaded!');
-        console.log('📋 No default credentials - Setup your admin account');
+        console.log('📱 Device Monitor System Loaded!');
+        console.log('🔗 Share Link:', window.location.href);
+        console.log('📊 Devices:', devices.length);
 
-        if (!checkAutoLogin()) {
-            const credentials = getAdminCredentials();
-            if (!credentials) {
-                console.log('🔑 Please setup your admin account');
-                showSetup();
-            } else {
-                console.log('👤 Admin account exists. Please login.');
-                showLogin();
-            }
-        }
+        init();
     </script>
 
 </body>
