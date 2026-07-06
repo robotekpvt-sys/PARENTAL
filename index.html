@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Device Monitor - Live</title>
+    <title>Phone Monitor - Live</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -12,6 +12,22 @@
         body.dark-mode{--bg:#0F172A;--card:#1E293B;--text:#F1F5F9;--text2:#94A3B8;--border:#334155}
         body{background:var(--bg);color:var(--text);min-height:100vh}
 
+        /* ===== CLIENT ACCESS PAGE ===== */
+        .client-wrapper{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#1E1B4B 0%,#4F46E5 50%,#818CF8 100%)}
+        .client-box{background:rgba(255,255,255,0.05);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.1);padding:44px 36px;border-radius:24px;width:100%;max-width:420px;box-shadow:0 25px 60px rgba(0,0,0,0.3)}
+        .client-box .logo{text-align:center;font-size:28px;font-weight:800;color:#fff;margin-bottom:2px}
+        .client-box .logo span{background:linear-gradient(135deg,#fff,#818CF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .client-box .sub{text-align:center;color:rgba(255,255,255,0.5);font-size:12px;letter-spacing:0.5px;margin-bottom:24px}
+        .client-box .code-display{text-align:center;padding:20px;background:rgba(255,255,255,0.05);border-radius:16px;border:2px dashed rgba(255,255,255,0.2);margin-bottom:20px}
+        .client-box .code-display .code{font-size:42px;font-weight:800;color:#fff;letter-spacing:4px;font-family:monospace}
+        .client-box .code-display .label{color:rgba(255,255,255,0.5);font-size:12px;margin-top:6px}
+        .client-box .btn-connect{width:100%;padding:16px;border:none;border-radius:12px;background:linear-gradient(135deg,#4F46E5,#818CF8);color:#fff;font-weight:600;font-size:16px;cursor:pointer;transition:all 0.3s}
+        .client-box .btn-connect:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(79,70,229,0.4)}
+        .client-box .btn-secondary{width:100%;padding:14px;border:2px solid rgba(255,255,255,0.2);border-radius:12px;background:transparent;color:rgba(255,255,255,0.7);font-weight:600;font-size:14px;cursor:pointer;margin-top:10px;transition:all 0.3s}
+        .client-box .btn-secondary:hover{background:rgba(255,255,255,0.1)}
+        .client-box .status{color:rgba(255,255,255,0.5);font-size:13px;text-align:center;margin-top:12px}
+
+        /* ===== DASHBOARD ===== */
         .header{background:var(--card);padding:14px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
         .logo-text{font-size:22px;font-weight:800;color:var(--text)}
         .logo-text span{background:linear-gradient(135deg,var(--primary),var(--primary-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -20,21 +36,32 @@
         .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff}
         .btn-outline{background:transparent;border:2px solid var(--border);color:var(--text)}
         .btn-danger{background:var(--danger);color:#fff}
-
-        /* ===== SHARE BAR ===== */
-        .share-bar{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:14px 18px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
-        .share-bar .link{font-size:14px;color:var(--text);word-break:break-all;flex:1}
-        .share-bar .link .label{font-size:12px;color:var(--text2);font-weight:500;margin-right:8px}
-        .share-bar .actions{display:flex;gap:8px;flex-wrap:wrap}
-        .share-bar .actions .btn{padding:6px 14px;border:none;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:6px}
-        .share-bar .actions .btn-copy{background:var(--primary);color:#fff}
-        .share-bar .actions .btn-share{background:#25D366;color:#fff}
-        .share-bar .actions .btn-qr{background:var(--text2);color:#fff}
+        .btn-success{background:var(--success);color:#fff}
 
         .dashboard{max-width:1400px;margin:0 auto;padding:20px}
         .welcome{margin-bottom:16px}
         .welcome h1{font-size:26px;font-weight:800}
         .welcome p{color:var(--text2);margin-top:4px;font-size:14px}
+
+        /* Client Status Bar */
+        .client-status{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:14px 18px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+        .client-status .info{display:flex;align-items:center;gap:12px}
+        .client-status .info .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+        .client-status .info .dot.online{background:var(--success);animation:pulse 2s infinite}
+        .client-status .info .dot.offline{background:var(--danger)}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+        .client-status .info .name{font-weight:700;font-size:16px}
+        .client-status .info .detail{color:var(--text2);font-size:13px}
+        .client-status .actions{display:flex;gap:8px}
+
+        .share-bar{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:14px 18px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+        .share-bar .link{font-size:14px;color:var(--text);word-break:break-all;flex:1}
+        .share-bar .link .label{font-size:12px;color:var(--text2);font-weight:500;margin-right:8px}
+        .share-bar .actions{display:flex;gap:8px;flex-wrap:wrap}
+        .share-bar .actions .btn{padding:6px 14px;border:none;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px}
+        .share-bar .actions .btn-copy{background:var(--primary);color:#fff}
+        .share-bar .actions .btn-share{background:#25D366;color:#fff}
+        .share-bar .actions .btn-qr{background:var(--text2);color:#fff}
 
         .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:20px}
         .stat-card{background:var(--card);padding:16px 18px;border-radius:var(--radius);border:1px solid var(--border)}
@@ -43,7 +70,7 @@
         .stat-card .value{font-size:22px;font-weight:800;margin-top:2px}
         .stat-card .sub{font-size:11px;color:var(--text2)}
 
-        .device-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:20px}
+        .device-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-bottom:20px}
         .device-card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:16px;transition:all 0.3s}
         .device-card:hover{transform:translateY(-3px);box-shadow:0 4px 24px rgba(0,0,0,0.06)}
         .device-card .device-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
@@ -75,11 +102,10 @@
         .app-item .status.active{color:var(--success)}
         .app-item .status.inactive{color:var(--danger)}
 
+        .app-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
         .section-header{display:flex;justify-content:space-between;align-items:center;margin:16px 0 12px;flex-wrap:wrap;gap:10px}
         .section-header h2{font-size:18px;font-weight:700}
         .section-header .count{font-size:13px;color:var(--text2);font-weight:400}
-
-        .app-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
 
         .toast{position:fixed;bottom:20px;right:20px;background:var(--card);color:var(--text);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:500;z-index:9999;display:none;box-shadow:0 8px 32px rgba(0,0,0,0.12);border:1px solid var(--border);max-width:340px;animation:slideUp 0.3s ease}
         @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
@@ -89,60 +115,113 @@
         .modal{background:var(--card);width:100%;max-width:500px;border-radius:var(--radius);padding:24px;animation:modalSlide 0.3s ease;max-height:90vh;overflow-y:auto}
         @keyframes modalSlide{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}
         .modal-close{float:right;width:34px;height:34px;border-radius:50%;border:none;background:var(--input);font-size:18px;cursor:pointer;color:var(--text)}
-        .btn-submit{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-weight:700;font-size:15px;cursor:pointer;transition:all 0.3s;margin-top:6px}
+        .btn-submit{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-weight:700;font-size:15px;cursor:pointer;margin-top:6px}
+        .btn-secondary{width:100%;padding:12px;border:2px solid var(--border);border-radius:10px;background:transparent;color:var(--text);font-weight:600;font-size:13px;cursor:pointer;margin-top:6px}
 
-        @media(max-width:768px){.dashboard{padding:14px}.device-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}.app-list{grid-template-columns:1fr}.share-bar{flex-direction:column;align-items:stretch}}
+        @media(max-width:768px){.dashboard{padding:14px}.device-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}.app-list{grid-template-columns:1fr}.share-bar{flex-direction:column;align-items:stretch}.client-status{flex-direction:column;align-items:stretch}}
         @media(max-width:480px){.stats-grid{grid-template-columns:1fr}.share-bar .actions{flex-direction:column}.share-bar .actions .btn{justify-content:center}}
     </style>
 </head>
 <body>
 
-    <!-- ===== HEADER ===== -->
-    <div class="header">
-        <div class="logo-text">📱 <span>Device Monitor</span></div>
-        <div class="header-actions">
-            <button class="btn btn-outline" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark</button>
-            <button class="btn btn-primary" onclick="addDevice()"><i class="fas fa-plus"></i> Add Device</button>
-            <button class="btn btn-outline" onclick="refreshData()"><i class="fas fa-sync"></i> Refresh</button>
-            <button class="btn btn-danger" onclick="resetAll()"><i class="fas fa-undo"></i> Reset</button>
+    <!-- ===== CLIENT CONNECT PAGE ===== -->
+    <div id="clientPage" class="client-wrapper">
+        <div class="client-box">
+            <div class="logo">📱 <span>Phone Monitor</span></div>
+            <div class="sub">✦ CLIENT CONNECTION ✦</div>
+            
+            <div class="code-display">
+                <div class="code" id="deviceCode">JMD-7890</div>
+                <div class="label">🔑 Your Device Code</div>
+            </div>
+
+            <div style="text-align:center;color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:16px;">
+                <i class="fas fa-shield-alt"></i> This code identifies your phone
+            </div>
+
+            <button class="btn-connect" onclick="connectDevice()"><i class="fas fa-link"></i> Connect Phone</button>
+            <button class="btn-secondary" onclick="shareClientLink()"><i class="fab fa-whatsapp"></i> Share with Admin</button>
+            
+            <div class="status" id="clientStatus">🔴 Not connected</div>
+            <div style="margin-top:12px;text-align:center;color:rgba(255,255,255,0.3);font-size:11px;">
+                <i class="fas fa-lock"></i> End-to-end encrypted
+            </div>
         </div>
     </div>
 
-    <!-- ===== DASHBOARD ===== -->
-    <div class="dashboard">
-
-        <!-- ===== SHARE BAR ===== -->
-        <div class="share-bar">
-            <div class="link">
-                <span class="label">🔗 Share Link:</span>
-                <span id="shareLink">Loading...</span>
-            </div>
-            <div class="actions">
-                <button class="btn btn-copy" onclick="copyLink()"><i class="fas fa-copy"></i> Copy</button>
-                <button class="btn btn-share" onclick="shareLink()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-                <button class="btn btn-qr" onclick="showQR()"><i class="fas fa-qrcode"></i> QR</button>
+    <!-- ===== ADMIN DASHBOARD ===== -->
+    <div id="dashboardPage" style="display:none;">
+        <div class="header">
+            <div class="logo-text">📱 <span>Phone Monitor</span></div>
+            <div class="header-actions">
+                <span style="font-size:13px;color:var(--text2);"><i class="fas fa-user-shield"></i> <span id="adminName">Admin</span></span>
+                <button class="btn btn-outline" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark</button>
+                <button class="btn btn-outline" onclick="refreshData()"><i class="fas fa-sync"></i> Refresh</button>
+                <button class="btn btn-danger" onclick="disconnectClient()"><i class="fas fa-link"></i> Disconnect</button>
             </div>
         </div>
 
-        <div class="welcome">
-            <h1>📊 Device Monitoring Dashboard</h1>
-            <p>Real-time monitoring of calls, WhatsApp, apps, and device activity.</p>
+        <div class="dashboard">
+
+            <!-- Client Status -->
+            <div class="client-status">
+                <div class="info">
+                    <span class="dot online" id="clientDot"></span>
+                    <div>
+                        <div class="name" id="clientName">📱 Client: JMD-7890</div>
+                        <div class="detail" id="clientDetail">Last active: Just now</div>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-success" onclick="refreshData()"><i class="fas fa-sync"></i> Sync Now</button>
+                </div>
+            </div>
+
+            <!-- Share Bar -->
+            <div class="share-bar">
+                <div class="link">
+                    <span class="label">🔗 Share Link:</span>
+                    <span id="shareLink">Loading...</span>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-copy" onclick="copyLink()"><i class="fas fa-copy"></i> Copy</button>
+                    <button class="btn btn-share" onclick="shareLink()"><i class="fab fa-whatsapp"></i> Share</button>
+                    <button class="btn btn-qr" onclick="showQR()"><i class="fas fa-qrcode"></i> QR</button>
+                </div>
+            </div>
+
+            <div class="welcome">
+                <h1>📊 Phone Monitoring Dashboard</h1>
+                <p>Real-time data from connected phone: <strong id="connectedPhone">JMD-7890</strong></p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card"><div class="icon">📱</div><div class="label">Phone Model</div><div class="value" id="phoneModel">iPhone 14 Pro</div></div>
+                <div class="stat-card"><div class="icon">📞</div><div class="label">Total Calls</div><div class="value" id="totalCalls">0</div><div class="sub" id="callDetail">0 incoming · 0 outgoing</div></div>
+                <div class="stat-card"><div class="icon">💬</div><div class="label">WhatsApp Messages</div><div class="value" id="totalMessages">0</div></div>
+                <div class="stat-card"><div class="icon">📲</div><div class="label">Apps Used</div><div class="value" id="totalApps">0</div><div class="sub" id="appDetail">0 active</div></div>
+            </div>
+
+            <!-- Calls -->
+            <div class="section-header">
+                <h2>📞 Recent Calls <span class="count" id="callCount">(0)</span></h2>
+                <button class="btn btn-outline" onclick="refreshData()"><i class="fas fa-sync"></i> Refresh</button>
+            </div>
+            <div class="device-grid" id="callsGrid"></div>
+
+            <!-- WhatsApp Messages -->
+            <div class="section-header">
+                <h2>💬 WhatsApp Messages <span class="count" id="msgCount">(0)</span></h2>
+            </div>
+            <div class="device-grid" id="messagesGrid"></div>
+
+            <!-- Apps -->
+            <div class="section-header">
+                <h2>📲 Apps <span class="count" id="appCount">(0)</span></h2>
+            </div>
+            <div class="device-grid" id="appsGrid"></div>
+
         </div>
-
-        <div class="stats-grid">
-            <div class="stat-card"><div class="icon">📱</div><div class="label">Total Devices</div><div class="value" id="totalDevices">0</div></div>
-            <div class="stat-card"><div class="icon">📞</div><div class="label">Today's Calls</div><div class="value" id="totalCalls">0</div><div class="sub" id="callDetail">0 incoming · 0 outgoing</div></div>
-            <div class="stat-card"><div class="icon">💬</div><div class="label">WhatsApp Messages</div><div class="value" id="totalMessages">0</div></div>
-            <div class="stat-card"><div class="icon">📲</div><div class="label">Apps Used</div><div class="value" id="totalApps">0</div><div class="sub" id="appDetail">0 active</div></div>
-        </div>
-
-        <div class="section-header">
-            <h2>📱 Devices <span class="count" id="deviceCount">(0)</span></h2>
-            <button class="btn btn-primary" onclick="addDevice()"><i class="fas fa-plus"></i> Add Device</button>
-        </div>
-
-        <div class="device-grid" id="deviceGrid"></div>
-
     </div>
 
     <!-- ===== TOAST ===== -->
@@ -155,34 +234,275 @@
 
     <script>
         // ==========================================
-        // 🔥 NO LOGIN - DIRECT ACCESS
+        // 🔥 PHONE MONITORING SYSTEM
         // ==========================================
 
-        let devices = [];
+        // ==========================================
+        // STATE
+        // ==========================================
+        let isConnected = false;
+        let clientCode = 'JMD-7890';
+        let phoneData = {
+            model: 'iPhone 14 Pro',
+            calls: [
+                { number: '+91 98765 43210', duration: '5:23', type: 'incoming', time: '10:30 AM' },
+                { number: '+91 87654 32109', duration: '2:15', type: 'outgoing', time: '09:45 AM' },
+                { number: '+91 76543 21098', duration: '0:00', type: 'missed', time: '08:20 AM' }
+            ],
+            messages: [
+                { sender: 'Mom', message: 'Coming home for lunch?', time: '11:15 AM' },
+                { sender: 'Rahul', message: 'Game at 4pm?', time: '10:45 AM' },
+                { sender: 'Priya', message: 'Ok see you there!', time: '09:30 AM' }
+            ],
+            apps: [
+                { name: 'WhatsApp', icon: 'fab fa-whatsapp', time: '45m', active: true },
+                { name: 'Instagram', icon: 'fab fa-instagram', time: '32m', active: true },
+                { name: 'YouTube', icon: 'fab fa-youtube', time: '28m', active: true },
+                { name: 'Snapchat', icon: 'fab fa-snapchat', time: '15m', active: false }
+            ]
+        };
         let isDarkMode = false;
 
         // ==========================================
         // INIT
         // ==========================================
         function init() {
-            loadFromStorage();
-            renderDevices();
-            updateStats();
             updateShareLink();
+            generateDeviceCode();
 
             if (localStorage.getItem('monitor_darkmode') === 'true') {
                 document.body.classList.add('dark-mode');
                 isDarkMode = true;
             }
 
+            // Check if already connected
+            if (localStorage.getItem('phone_connected') === 'true') {
+                connectDevice();
+            }
+
             // Auto refresh every 10 seconds
             setInterval(() => {
-                refreshData();
+                if (isConnected) {
+                    refreshData();
+                }
             }, 10000);
         }
 
         // ==========================================
-        // 🔗 SHARE LINK FUNCTIONS
+        // GENERATE DEVICE CODE
+        // ==========================================
+        function generateDeviceCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = 'JMD-';
+            for (let i = 0; i < 4; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            clientCode = code;
+            document.getElementById('deviceCode').textContent = code;
+            
+            // Save to localStorage
+            localStorage.setItem('device_code', code);
+        }
+
+        // ==========================================
+        // CONNECT DEVICE
+        // ==========================================
+        function connectDevice() {
+            isConnected = true;
+            localStorage.setItem('phone_connected', 'true');
+            
+            document.getElementById('clientPage').style.display = 'none';
+            document.getElementById('dashboardPage').style.display = 'block';
+            document.getElementById('clientName').textContent = '📱 Client: ' + clientCode;
+            document.getElementById('connectedPhone').textContent = clientCode;
+            document.getElementById('clientDot').className = 'dot online';
+            
+            renderData();
+            updateStats();
+            toast('✅ Phone connected! Monitoring started.');
+        }
+
+        // ==========================================
+        // DISCONNECT CLIENT
+        // ==========================================
+        function disconnectClient() {
+            if (!confirm('Disconnect phone?')) return;
+            isConnected = false;
+            localStorage.removeItem('phone_connected');
+            document.getElementById('dashboardPage').style.display = 'none';
+            document.getElementById('clientPage').style.display = 'flex';
+            document.getElementById('clientStatus').textContent = '🔴 Disconnected';
+            toast('👋 Phone disconnected');
+        }
+
+        // ==========================================
+        // RENDER DATA
+        // ==========================================
+        function renderData() {
+            renderCalls();
+            renderMessages();
+            renderApps();
+            updateStats();
+        }
+
+        function renderCalls() {
+            const grid = document.getElementById('callsGrid');
+            grid.innerHTML = '';
+            
+            if (phoneData.calls.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text2);">
+                        <div style="font-size:36px;margin-bottom:8px;">📞</div>
+                        <p>No calls recorded yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const card = document.createElement('div');
+            card.className = 'device-card';
+            card.innerHTML = `
+                <div class="device-header">
+                    <div class="device-name">📞 Call History</div>
+                    <div class="device-status">${phoneData.calls.length} calls</div>
+                </div>
+                ${phoneData.calls.map(call => `
+                    <div class="call-item">
+                        <span class="number">${call.number}</span>
+                        <span class="duration">${call.duration}</span>
+                        <span class="type ${call.type}">${call.type}</span>
+                        <span style="font-size:11px;color:var(--text2);">${call.time}</span>
+                    </div>
+                `).join('')}
+            `;
+            grid.appendChild(card);
+            document.getElementById('callCount').textContent = '(' + phoneData.calls.length + ')';
+            document.getElementById('totalCalls').textContent = phoneData.calls.length;
+        }
+
+        function renderMessages() {
+            const grid = document.getElementById('messagesGrid');
+            grid.innerHTML = '';
+            
+            if (phoneData.messages.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text2);">
+                        <div style="font-size:36px;margin-bottom:8px;">💬</div>
+                        <p>No messages yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const card = document.createElement('div');
+            card.className = 'device-card';
+            card.innerHTML = `
+                <div class="device-header">
+                    <div class="device-name">💬 WhatsApp Messages</div>
+                    <div class="device-status">${phoneData.messages.length} messages</div>
+                </div>
+                ${phoneData.messages.map(msg => `
+                    <div class="msg-item">
+                        <span class="sender">${msg.sender}</span>
+                        <span class="msg">${msg.message}</span>
+                        <span class="time">${msg.time}</span>
+                    </div>
+                `).join('')}
+            `;
+            grid.appendChild(card);
+            document.getElementById('msgCount').textContent = '(' + phoneData.messages.length + ')';
+            document.getElementById('totalMessages').textContent = phoneData.messages.length;
+        }
+
+        function renderApps() {
+            const grid = document.getElementById('appsGrid');
+            grid.innerHTML = '';
+            
+            if (phoneData.apps.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text2);">
+                        <div style="font-size:36px;margin-bottom:8px;">📲</div>
+                        <p>No apps data</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const card = document.createElement('div');
+            card.className = 'device-card';
+            card.innerHTML = `
+                <div class="device-header">
+                    <div class="device-name">📲 Apps</div>
+                    <div class="device-status">${phoneData.apps.filter(a => a.active).length} active</div>
+                </div>
+                <div class="app-list">
+                    ${phoneData.apps.map(app => `
+                        <div class="app-item">
+                            <div><i class="${app.icon}"></i> ${app.name}</div>
+                            <div>
+                                <span class="status ${app.active ? 'active' : 'inactive'}">${app.active ? '●' : '○'}</span>
+                                <span class="time">${app.time}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            grid.appendChild(card);
+            document.getElementById('appCount').textContent = '(' + phoneData.apps.length + ')';
+            document.getElementById('totalApps').textContent = phoneData.apps.length;
+            const activeApps = phoneData.apps.filter(a => a.active).length;
+            document.getElementById('appDetail').textContent = activeApps + ' active';
+        }
+
+        function updateStats() {
+            const incoming = phoneData.calls.filter(c => c.type === 'incoming').length;
+            const outgoing = phoneData.calls.filter(c => c.type === 'outgoing').length;
+            document.getElementById('callDetail').textContent = `${incoming} incoming · ${outgoing} outgoing`;
+            document.getElementById('phoneModel').textContent = phoneData.model;
+        }
+
+        // ==========================================
+        // REFRESH DATA (Simulate New Data)
+        // ==========================================
+        function refreshData() {
+            if (!isConnected) return;
+
+            // Simulate new call
+            if (Math.random() > 0.5) {
+                phoneData.calls.unshift({
+                    number: "+91 " + Math.floor(1000000000 + Math.random() * 9000000000),
+                    duration: Math.floor(Math.random() * 300) + "s",
+                    type: ['incoming', 'outgoing', 'missed'][Math.floor(Math.random() * 3)],
+                    time: new Date().toLocaleTimeString()
+                });
+                if (phoneData.calls.length > 10) phoneData.calls.pop();
+            }
+
+            // Simulate new message
+            if (Math.random() > 0.5) {
+                const names = ['Mom', 'Dad', 'Friend', 'Teacher', 'Sister', 'Brother'];
+                phoneData.messages.unshift({
+                    sender: names[Math.floor(Math.random() * names.length)],
+                    message: ['Ok', 'Coming', 'Done', 'See you', 'Thanks', 'Yes', 'No'][Math.floor(Math.random() * 7)],
+                    time: new Date().toLocaleTimeString()
+                });
+                if (phoneData.messages.length > 10) phoneData.messages.pop();
+            }
+
+            // Simulate app activity
+            phoneData.apps.forEach(app => {
+                app.active = Math.random() > 0.3;
+                if (app.active) {
+                    app.time = Math.floor(Math.random() * 60) + 'm';
+                }
+            });
+
+            renderData();
+            toast('🔄 Data updated!');
+        }
+
+        // ==========================================
+        // SHARE LINK
         // ==========================================
         function updateShareLink() {
             const link = window.location.href;
@@ -191,22 +511,19 @@
 
         function copyLink() {
             const link = document.getElementById('shareLink').textContent;
-            navigator.clipboard.writeText(link).then(() => {
-                toast('✅ Link copied to clipboard!');
-            }).catch(() => {
-                const input = document.createElement('input');
-                input.value = link;
-                document.body.appendChild(input);
-                input.select();
-                document.execCommand('copy');
-                document.body.removeChild(input);
-                toast('✅ Link copied!');
-            });
+            navigator.clipboard.writeText(link).then(() => toast('✅ Link copied!'));
         }
 
         function shareLink() {
             const link = document.getElementById('shareLink').textContent;
-            const msg = encodeURIComponent('📱 Check out Device Monitor! Real-time monitoring of calls, WhatsApp, and apps.\n\n' + link);
+            const msg = encodeURIComponent('📱 Phone Monitor\n\nShare this link to connect your phone and start monitoring.\n\n' + link);
+            window.open('https://wa.me/?text=' + msg, '_blank');
+        }
+
+        function shareClientLink() {
+            const link = window.location.href;
+            const code = clientCode;
+            const msg = encodeURIComponent('📱 Phone Monitoring Setup\n\n1. Open this link on your phone: ' + link + '\n2. Your device code: ' + code + '\n3. Click "Connect Phone"\n\n✅ You\'re being monitored!');
             window.open('https://wa.me/?text=' + msg, '_blank');
         }
 
@@ -219,344 +536,11 @@
                 <h2 style="margin-bottom:12px;">📱 Scan QR Code</h2>
                 <div style="text-align:center;">
                     <img src="${qrUrl}" style="max-width:250px;border-radius:12px;border:2px solid var(--border);">
-                    <p style="margin-top:12px;color:var(--text2);font-size:13px;">Scan to access the dashboard</p>
-                    <div style="margin-top:8px;font-size:12px;color:var(--text2);word-break:break-all;">${link}</div>
+                    <p style="margin-top:12px;color:var(--text2);font-size:13px;">Scan to connect your phone</p>
                 </div>
                 <button class="btn-submit" onclick="closeModal()" style="margin-top:16px;">Close</button>
             `;
             openModal(html);
-        }
-
-        // ==========================================
-        // STORAGE
-        // ==========================================
-        function loadFromStorage() {
-            try {
-                const saved = localStorage.getItem('monitor_devices');
-                if (saved) {
-                    devices = JSON.parse(saved);
-                } else {
-                    devices = [{
-                        id: 1,
-                        name: "Aarav's iPhone",
-                        model: "iPhone 14 Pro",
-                        status: "online",
-                        lastActive: "Just now",
-                        calls: [
-                            { number: "+91 98765 43210", duration: "5:23", type: "incoming", time: "10:30 AM" },
-                            { number: "+91 87654 32109", duration: "2:15", type: "outgoing", time: "09:45 AM" },
-                            { number: "+91 76543 21098", duration: "0:00", type: "missed", time: "08:20 AM" }
-                        ],
-                        messages: [
-                            { sender: "Mom", message: "Coming home for lunch?", time: "11:15 AM", app: "WhatsApp" },
-                            { sender: "Rahul", message: "Game at 4pm?", time: "10:45 AM", app: "WhatsApp" },
-                            { sender: "Priya", message: "Ok see you there!", time: "09:30 AM", app: "WhatsApp" }
-                        ],
-                        apps: [
-                            { name: "WhatsApp", icon: "fab fa-whatsapp", time: "45m", active: true },
-                            { name: "Instagram", icon: "fab fa-instagram", time: "32m", active: true },
-                            { name: "YouTube", icon: "fab fa-youtube", time: "28m", active: true },
-                            { name: "Snapchat", icon: "fab fa-snapchat", time: "15m", active: false },
-                            { name: "TikTok", icon: "fab fa-tiktok", time: "12m", active: false }
-                        ]
-                    }, {
-                        id: 2,
-                        name: "Ananya's Samsung",
-                        model: "Samsung S23 Ultra",
-                        status: "online",
-                        lastActive: "Just now",
-                        calls: [
-                            { number: "+91 99887 76655", duration: "10:45", type: "incoming", time: "11:00 AM" },
-                            { number: "+91 88776 65544", duration: "3:30", type: "outgoing", time: "10:15 AM" }
-                        ],
-                        messages: [
-                            { sender: "Dad", message: "How's school?", time: "10:30 AM", app: "WhatsApp" },
-                            { sender: "Sneha", message: "Did you finish homework?", time: "09:00 AM", app: "WhatsApp" }
-                        ],
-                        apps: [
-                            { name: "WhatsApp", icon: "fab fa-whatsapp", time: "38m", active: true },
-                            { name: "Instagram", icon: "fab fa-instagram", time: "25m", active: true },
-                            { name: "Spotify", icon: "fab fa-spotify", time: "20m", active: false }
-                        ]
-                    }];
-                    saveToStorage();
-                }
-            } catch (e) { devices = []; }
-        }
-
-        function saveToStorage() {
-            localStorage.setItem('monitor_devices', JSON.stringify(devices));
-        }
-
-        // ==========================================
-        // RENDER DEVICES
-        // ==========================================
-        function renderDevices() {
-            const grid = document.getElementById('deviceGrid');
-            grid.innerHTML = '';
-
-            if (devices.length === 0) {
-                grid.innerHTML = `
-                    <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text2);">
-                        <div style="font-size:48px;margin-bottom:12px;">📱</div>
-                        <p>No devices added. Click "Add Device" to start monitoring.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            devices.forEach(device => {
-                const card = document.createElement('div');
-                card.className = 'device-card';
-                card.innerHTML = `
-                    <div class="device-header">
-                        <div>
-                            <div class="device-name">${device.name}</div>
-                            <div style="font-size:12px;color:var(--text2);">${device.model}</div>
-                        </div>
-                        <div class="device-status">
-                            <span class="dot ${device.status === 'online' ? 'online' : 'offline'}"></span>
-                            ${device.status} · ${device.lastActive}
-                        </div>
-                    </div>
-
-                    <div style="margin:6px 0;">
-                        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px;">
-                            <span>📞 Recent Calls</span>
-                            <span>${device.calls.length} calls</span>
-                        </div>
-                        ${device.calls.slice(0,3).map(call => `
-                            <div class="call-item">
-                                <span class="number">${call.number}</span>
-                                <span class="duration">${call.duration}</span>
-                                <span class="type ${call.type}">${call.type}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-
-                    <div style="margin:6px 0;">
-                        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px;">
-                            <span>💬 WhatsApp</span>
-                            <span>${device.messages.length} messages</span>
-                        </div>
-                        ${device.messages.slice(0,3).map(msg => `
-                            <div class="msg-item">
-                                <span class="sender">${msg.sender}</span>
-                                <span class="msg">${msg.message}</span>
-                                <span class="time">${msg.time}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-
-                    <div style="margin:6px 0;">
-                        <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:4px;">
-                            <span>📲 Apps</span>
-                            <span>${device.apps.filter(a => a.active).length} active</span>
-                        </div>
-                        <div class="app-list">
-                            ${device.apps.map(app => `
-                                <div class="app-item">
-                                    <div><i class="${app.icon}"></i> ${app.name}</div>
-                                    <div>
-                                        <span class="status ${app.active ? 'active' : 'inactive'}">${app.active ? '●' : '○'}</span>
-                                        <span class="time">${app.time}</span>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-
-                    <div style="display:flex;gap:6px;margin-top:8px;">
-                        <button class="btn btn-primary" onclick="viewDeviceDetail(${device.id})" style="flex:1;justify-content:center;padding:6px 12px;font-size:11px;">
-                            <i class="fas fa-eye"></i> Full Details
-                        </button>
-                        <button class="btn btn-danger" onclick="deleteDevice(${device.id})" style="padding:6px 12px;font-size:11px;">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-
-            document.getElementById('deviceCount').textContent = `(${devices.length})`;
-        }
-
-        function updateStats() {
-            const total = devices.length;
-            const totalCalls = devices.reduce((sum, d) => sum + d.calls.length, 0);
-            const totalMsgs = devices.reduce((sum, d) => sum + d.messages.length, 0);
-            const totalApps = devices.reduce((sum, d) => sum + d.apps.length, 0);
-            const activeApps = devices.reduce((sum, d) => sum + d.apps.filter(a => a.active).length, 0);
-
-            document.getElementById('totalDevices').textContent = total;
-            document.getElementById('totalCalls').textContent = totalCalls;
-            document.getElementById('totalMessages').textContent = totalMsgs;
-            document.getElementById('totalApps').textContent = totalApps;
-
-            const incoming = devices.reduce((sum, d) => sum + d.calls.filter(c => c.type === 'incoming').length, 0);
-            const outgoing = devices.reduce((sum, d) => sum + d.calls.filter(c => c.type === 'outgoing').length, 0);
-            document.getElementById('callDetail').textContent = `${incoming} incoming · ${outgoing} outgoing`;
-            document.getElementById('appDetail').textContent = `${activeApps} active`;
-            document.getElementById('deviceCount').textContent = `(${total})`;
-        }
-
-        function refreshData() {
-            devices.forEach(device => {
-                device.lastActive = 'Just now';
-                device.status = 'online';
-                if (Math.random() > 0.5) {
-                    device.calls.unshift({
-                        number: "+91 " + Math.floor(1000000000 + Math.random() * 9000000000),
-                        duration: Math.floor(Math.random() * 300) + "s",
-                        type: ['incoming', 'outgoing', 'missed'][Math.floor(Math.random() * 3)],
-                        time: new Date().toLocaleTimeString()
-                    });
-                    if (device.calls.length > 10) device.calls.pop();
-                }
-                if (Math.random() > 0.5) {
-                    const names = ['Mom', 'Dad', 'Friend', 'Teacher', 'Sister'];
-                    device.messages.unshift({
-                        sender: names[Math.floor(Math.random() * names.length)],
-                        message: ['Ok', 'Coming', 'Done', 'See you', 'Thanks'][Math.floor(Math.random() * 5)],
-                        time: new Date().toLocaleTimeString(),
-                        app: 'WhatsApp'
-                    });
-                    if (device.messages.length > 10) device.messages.pop();
-                }
-                device.apps.forEach(app => {
-                    app.active = Math.random() > 0.3;
-                    if (app.active) app.time = Math.floor(Math.random() * 60) + 'm';
-                });
-            });
-            saveToStorage();
-            renderDevices();
-            updateStats();
-            toast('🔄 Data refreshed!');
-        }
-
-        function addDevice() {
-            const html = `
-                <button class="modal-close" onclick="closeModal()">✕</button>
-                <h2>📱 Add Device</h2>
-                <div class="field" style="margin-bottom:14px;">
-                    <label style="font-weight:600;font-size:13px;color:var(--text2);display:block;margin-bottom:4px;">Device Name *</label>
-                    <input type="text" id="deviceName" placeholder="e.g., Aarav's iPhone" style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;background:var(--input);font-size:13px;color:var(--text);outline:none;">
-                </div>
-                <div class="field" style="margin-bottom:14px;">
-                    <label style="font-weight:600;font-size:13px;color:var(--text2);display:block;margin-bottom:4px;">Device Model</label>
-                    <input type="text" id="deviceModel" placeholder="e.g., iPhone 14 Pro" value="Smartphone" style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;background:var(--input);font-size:13px;color:var(--text);outline:none;">
-                </div>
-                <div class="field" style="margin-bottom:14px;">
-                    <label style="font-weight:600;font-size:13px;color:var(--text2);display:block;margin-bottom:4px;">Status</label>
-                    <select id="deviceStatus" style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;background:var(--input);font-size:13px;color:var(--text);outline:none;">
-                        <option value="online">Online</option>
-                        <option value="offline">Offline</option>
-                    </select>
-                </div>
-                <button class="btn-submit" onclick="addDeviceSubmit()"><i class="fas fa-plus"></i> Add Device</button>
-                <button class="btn-secondary" onclick="closeModal()" style="width:100%;padding:12px;border:2px solid var(--border);border-radius:10px;background:transparent;color:var(--text);font-weight:600;font-size:13px;cursor:pointer;margin-top:6px;">Cancel</button>
-            `;
-            openModal(html);
-        }
-
-        function addDeviceSubmit() {
-            const name = document.getElementById('deviceName').value.trim();
-            const model = document.getElementById('deviceModel').value.trim() || 'Smartphone';
-            const status = document.getElementById('deviceStatus').value;
-
-            if (!name) { toast('⚠️ Please enter device name'); return; }
-
-            devices.push({
-                id: Date.now(),
-                name: name,
-                model: model,
-                status: status,
-                lastActive: 'Just now',
-                calls: [{ number: "+91 98765 43210", duration: "0:00", type: "incoming", time: "Just now" }],
-                messages: [{ sender: "System", message: "Device connected", time: "Just now", app: "System" }],
-                apps: [
-                    { name: "WhatsApp", icon: "fab fa-whatsapp", time: "0m", active: false },
-                    { name: "Instagram", icon: "fab fa-instagram", time: "0m", active: false }
-                ]
-            });
-
-            saveToStorage();
-            renderDevices();
-            updateStats();
-            closeModal();
-            toast('✅ Device added!');
-        }
-
-        function viewDeviceDetail(id) {
-            const device = devices.find(d => d.id === id);
-            if (!device) return;
-
-            const callsHtml = device.calls.map(c => `
-                <div class="call-item" style="padding:8px 0;">
-                    <span class="number">${c.number}</span>
-                    <span class="duration">${c.duration}</span>
-                    <span class="type ${c.type}">${c.type}</span>
-                    <span style="font-size:11px;color:var(--text2);">${c.time}</span>
-                </div>
-            `).join('');
-
-            const msgsHtml = device.messages.map(m => `
-                <div class="msg-item" style="padding:8px 0;">
-                    <span class="sender">${m.sender}</span>
-                    <span class="msg">${m.message}</span>
-                    <span style="font-size:11px;color:var(--text2);">${m.time}</span>
-                </div>
-            `).join('');
-
-            const html = `
-                <button class="modal-close" onclick="closeModal()">✕</button>
-                <h2>📱 ${device.name}</h2>
-                <div style="display:grid;gap:3px;margin-bottom:12px;font-size:13px;color:var(--text2);">
-                    <p><strong>Model:</strong> ${device.model}</p>
-                    <p><strong>Status:</strong> ${device.status}</p>
-                    <p><strong>Last Active:</strong> ${device.lastActive}</p>
-                </div>
-
-                <h3 style="margin:12px 0 6px;font-size:15px;">📞 All Calls (${device.calls.length})</h3>
-                ${callsHtml || '<p style="color:var(--text2);font-size:13px;">No calls yet</p>'}
-
-                <h3 style="margin:12px 0 6px;font-size:15px;">💬 All WhatsApp Messages (${device.messages.length})</h3>
-                ${msgsHtml || '<p style="color:var(--text2);font-size:13px;">No messages yet</p>'}
-
-                <h3 style="margin:12px 0 6px;font-size:15px;">📲 Apps</h3>
-                <div class="app-list" style="grid-template-columns:1fr;">
-                    ${device.apps.map(app => `
-                        <div class="app-item" style="padding:8px 12px;">
-                            <div><i class="${app.icon}"></i> ${app.name}</div>
-                            <div>
-                                <span class="status ${app.active ? 'active' : 'inactive'}">${app.active ? '● Active' : '○ Inactive'}</span>
-                                <span class="time">${app.time}</span>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-
-                <button class="btn-submit" onclick="closeModal()">Close</button>
-            `;
-            openModal(html);
-        }
-
-        function deleteDevice(id) {
-            if (!confirm('Delete this device?')) return;
-            devices = devices.filter(d => d.id !== id);
-            saveToStorage();
-            renderDevices();
-            updateStats();
-            toast('🗑️ Device removed');
-        }
-
-        function resetAll() {
-            if (!confirm('Reset all data? This cannot be undone!')) return;
-            localStorage.removeItem('monitor_devices');
-            devices = [];
-            renderDevices();
-            updateStats();
-            toast('🔄 All data reset!');
         }
 
         // ==========================================
@@ -594,25 +578,23 @@
         // ==========================================
         // EXPOSE FUNCTIONS
         // ==========================================
-        window.addDevice = addDevice;
-        window.addDeviceSubmit = addDeviceSubmit;
-        window.viewDeviceDetail = viewDeviceDetail;
-        window.deleteDevice = deleteDevice;
+        window.connectDevice = connectDevice;
+        window.disconnectClient = disconnectClient;
         window.refreshData = refreshData;
-        window.resetAll = resetAll;
+        window.copyLink = copyLink;
+        window.shareLink = shareLink;
+        window.shareClientLink = shareClientLink;
+        window.showQR = showQR;
         window.closeModal = closeModal;
         window.toast = toast;
         window.toggleDarkMode = toggleDarkMode;
-        window.copyLink = copyLink;
-        window.shareLink = shareLink;
-        window.showQR = showQR;
 
         // ==========================================
         // INIT
         // ==========================================
-        console.log('📱 Device Monitor System Loaded!');
+        console.log('📱 Phone Monitor System Loaded!');
+        console.log('🔑 Device Code:', clientCode);
         console.log('🔗 Share Link:', window.location.href);
-        console.log('📊 Devices:', devices.length);
 
         init();
     </script>
