@@ -3,601 +3,375 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Phone Monitor - Live</title>
+    <title>Admin Dashboard - Phone Data</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-        :root{--primary:#4F46E5;--primary-light:#818CF8;--bg:#F1F5F9;--card:#FFFFFF;--text:#0F172A;--text2:#64748B;--border:#E2E8F0;--success:#10B981;--danger:#EF4444;--radius:16px}
-        body.dark-mode{--bg:#0F172A;--card:#1E293B;--text:#F1F5F9;--text2:#94A3B8;--border:#334155}
-        body{background:var(--bg);color:var(--text);min-height:100vh}
+        body{background:#0a0a0a;color:#00ff41;min-height:100vh;padding:20px;font-family:'Courier New',monospace}
+        .container{max-width:1400px;margin:0 auto}
+        
+        .header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:#0d0d0d;border-radius:12px;border:1px solid #00ff4133;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+        .header h1{font-size:22px;color:#00ff41}
+        .header .status{display:flex;align-items:center;gap:10px;font-size:13px;color:#00ff4188}
+        .header .status .dot{width:10px;height:10px;border-radius:50%;background:#00ff41;animation:pulse 2s infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 
-        /* ===== CLIENT ACCESS PAGE ===== */
-        .client-wrapper{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#1E1B4B 0%,#4F46E5 50%,#818CF8 100%)}
-        .client-box{background:rgba(255,255,255,0.05);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.1);padding:44px 36px;border-radius:24px;width:100%;max-width:420px;box-shadow:0 25px 60px rgba(0,0,0,0.3)}
-        .client-box .logo{text-align:center;font-size:28px;font-weight:800;color:#fff;margin-bottom:2px}
-        .client-box .logo span{background:linear-gradient(135deg,#fff,#818CF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .client-box .sub{text-align:center;color:rgba(255,255,255,0.5);font-size:12px;letter-spacing:0.5px;margin-bottom:24px}
-        .client-box .code-display{text-align:center;padding:20px;background:rgba(255,255,255,0.05);border-radius:16px;border:2px dashed rgba(255,255,255,0.2);margin-bottom:20px}
-        .client-box .code-display .code{font-size:42px;font-weight:800;color:#fff;letter-spacing:4px;font-family:monospace}
-        .client-box .code-display .label{color:rgba(255,255,255,0.5);font-size:12px;margin-top:6px}
-        .client-box .btn-connect{width:100%;padding:16px;border:none;border-radius:12px;background:linear-gradient(135deg,#4F46E5,#818CF8);color:#fff;font-weight:600;font-size:16px;cursor:pointer;transition:all 0.3s}
-        .client-box .btn-connect:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(79,70,229,0.4)}
-        .client-box .btn-secondary{width:100%;padding:14px;border:2px solid rgba(255,255,255,0.2);border-radius:12px;background:transparent;color:rgba(255,255,255,0.7);font-weight:600;font-size:14px;cursor:pointer;margin-top:10px;transition:all 0.3s}
-        .client-box .btn-secondary:hover{background:rgba(255,255,255,0.1)}
-        .client-box .status{color:rgba(255,255,255,0.5);font-size:13px;text-align:center;margin-top:12px}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+        .stat-card{background:#0d0d0d;padding:14px 18px;border-radius:10px;border:1px solid #00ff4122}
+        .stat-card .num{font-size:24px;font-weight:800;color:#00ff41}
+        .stat-card .label{font-size:11px;color:#00ff4188}
 
-        /* ===== DASHBOARD ===== */
-        .header{background:var(--card);padding:14px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1000;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
-        .logo-text{font-size:22px;font-weight:800;color:var(--text)}
-        .logo-text span{background:linear-gradient(135deg,var(--primary),var(--primary-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .header-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-        .btn{padding:8px 16px;border:none;border-radius:10px;font-weight:600;font-size:12px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:6px}
-        .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff}
-        .btn-outline{background:transparent;border:2px solid var(--border);color:var(--text)}
-        .btn-danger{background:var(--danger);color:#fff}
-        .btn-success{background:var(--success);color:#fff}
+        .card{background:#0d0d0d;border-radius:12px;padding:16px;margin-bottom:16px;border:1px solid #00ff4122}
+        .card h3{font-size:14px;color:#00ff41;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+        .card h3 span{color:#00ff4188;font-size:11px;font-weight:400}
 
-        .dashboard{max-width:1400px;margin:0 auto;padding:20px}
-        .welcome{margin-bottom:16px}
-        .welcome h1{font-size:26px;font-weight:800}
-        .welcome p{color:var(--text2);margin-top:4px;font-size:14px}
+        .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+        .item{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #00ff4111;font-size:12px}
+        .item:last-child{border-bottom:none}
+        .item .label{color:#00ff4188}
+        .item .value{color:#00ff41;font-weight:500}
+        .item .value.incoming{color:#00ff41}
+        .item .value.outgoing{color:#00ffcc}
+        .item .value.missed{color:#ff4444}
 
-        /* Client Status Bar */
-        .client-status{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:14px 18px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
-        .client-status .info{display:flex;align-items:center;gap:12px}
-        .client-status .info .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
-        .client-status .info .dot.online{background:var(--success);animation:pulse 2s infinite}
-        .client-status .info .dot.offline{background:var(--danger)}
-        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-        .client-status .info .name{font-weight:700;font-size:16px}
-        .client-status .info .detail{color:var(--text2);font-size:13px}
-        .client-status .actions{display:flex;gap:8px}
+        .btn{width:100%;padding:10px;border:none;border-radius:8px;background:#00ff4122;color:#00ff41;font-weight:600;font-size:12px;cursor:pointer;transition:all 0.3s;border:1px solid #00ff4133;font-family:'Courier New',monospace}
+        .btn:hover{background:#00ff4133}
 
-        .share-bar{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:14px 18px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
-        .share-bar .link{font-size:14px;color:var(--text);word-break:break-all;flex:1}
-        .share-bar .link .label{font-size:12px;color:var(--text2);font-weight:500;margin-right:8px}
-        .share-bar .actions{display:flex;gap:8px;flex-wrap:wrap}
-        .share-bar .actions .btn{padding:6px 14px;border:none;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px}
-        .share-bar .actions .btn-copy{background:var(--primary);color:#fff}
-        .share-bar .actions .btn-share{background:#25D366;color:#fff}
-        .share-bar .actions .btn-qr{background:var(--text2);color:#fff}
+        .client-card{background:#0d0d0d;border-radius:12px;padding:14px;border:1px solid #00ff4133;margin-bottom:10px}
+        .client-card .top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+        .client-card .client-name{font-size:15px;font-weight:700;color:#00ff41}
+        .client-card .client-id{color:#00ff4188;font-size:11px}
+        .status-badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600}
+        .status-badge.online{background:#00ff4122;color:#00ff41;border:1px solid #00ff41}
+        .status-badge.offline{background:#ff444422;color:#ff4444;border:1px solid #ff4444}
 
-        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:20px}
-        .stat-card{background:var(--card);padding:16px 18px;border-radius:var(--radius);border:1px solid var(--border)}
-        .stat-card .icon{font-size:24px;margin-bottom:4px}
-        .stat-card .label{font-size:11px;color:var(--text2);font-weight:500}
-        .stat-card .value{font-size:22px;font-weight:800;margin-top:2px}
-        .stat-card .sub{font-size:11px;color:var(--text2)}
+        .logs{background:#000a00;padding:10px;border-radius:8px;border:1px solid #00ff4122;max-height:150px;overflow-y:auto;font-size:11px;color:#00ff4188;margin-top:10px}
+        .logs .log-entry{color:#00ff41;padding:2px 0}
 
-        .device-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-bottom:20px}
-        .device-card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:16px;transition:all 0.3s}
-        .device-card:hover{transform:translateY(-3px);box-shadow:0 4px 24px rgba(0,0,0,0.06)}
-        .device-card .device-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-        .device-card .device-name{font-size:17px;font-weight:700}
-        .device-card .device-status{font-size:12px;display:flex;align-items:center;gap:4px}
-        .device-card .device-status .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
-        .device-card .device-status .dot.online{background:var(--success)}
-        .device-card .device-status .dot.offline{background:var(--danger)}
-
-        .call-item{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid var(--border);font-size:13px}
-        .call-item:last-child{border-bottom:none}
-        .call-item .number{font-weight:600}
-        .call-item .duration{color:var(--text2);font-size:12px}
-        .call-item .type{font-size:12px;font-weight:600}
-        .call-item .type.incoming{color:var(--success)}
-        .call-item .type.outgoing{color:var(--primary)}
-        .call-item .type.missed{color:var(--danger)}
-
-        .msg-item{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid var(--border);font-size:13px}
-        .msg-item:last-child{border-bottom:none}
-        .msg-item .sender{font-weight:600}
-        .msg-item .msg{color:var(--text2);font-size:12px;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .msg-item .time{color:var(--text2);font-size:11px}
-
-        .app-item{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:var(--bg);border-radius:8px;font-size:12px}
-        .app-item .icon{font-size:16px}
-        .app-item .time{color:var(--text2);font-size:11px}
-        .app-item .status{font-size:10px;font-weight:600}
-        .app-item .status.active{color:var(--success)}
-        .app-item .status.inactive{color:var(--danger)}
-
-        .app-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
-        .section-header{display:flex;justify-content:space-between;align-items:center;margin:16px 0 12px;flex-wrap:wrap;gap:10px}
-        .section-header h2{font-size:18px;font-weight:700}
-        .section-header .count{font-size:13px;color:var(--text2);font-weight:400}
-
-        .toast{position:fixed;bottom:20px;right:20px;background:var(--card);color:var(--text);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:500;z-index:9999;display:none;box-shadow:0 8px 32px rgba(0,0,0,0.12);border:1px solid var(--border);max-width:340px;animation:slideUp 0.3s ease}
-        @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-
-        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);z-index:5000;display:none;align-items:center;justify-content:center;padding:20px}
-        .modal-overlay.show{display:flex}
-        .modal{background:var(--card);width:100%;max-width:500px;border-radius:var(--radius);padding:24px;animation:modalSlide 0.3s ease;max-height:90vh;overflow-y:auto}
-        @keyframes modalSlide{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}
-        .modal-close{float:right;width:34px;height:34px;border-radius:50%;border:none;background:var(--input);font-size:18px;cursor:pointer;color:var(--text)}
-        .btn-submit{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff;font-weight:700;font-size:15px;cursor:pointer;margin-top:6px}
-        .btn-secondary{width:100%;padding:12px;border:2px solid var(--border);border-radius:10px;background:transparent;color:var(--text);font-weight:600;font-size:13px;cursor:pointer;margin-top:6px}
-
-        @media(max-width:768px){.dashboard{padding:14px}.device-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}.app-list{grid-template-columns:1fr}.share-bar{flex-direction:column;align-items:stretch}.client-status{flex-direction:column;align-items:stretch}}
-        @media(max-width:480px){.stats-grid{grid-template-columns:1fr}.share-bar .actions{flex-direction:column}.share-bar .actions .btn{justify-content:center}}
+        @media(max-width:768px){.grid-2{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
 
-    <!-- ===== CLIENT CONNECT PAGE ===== -->
-    <div id="clientPage" class="client-wrapper">
-        <div class="client-box">
-            <div class="logo">📱 <span>Phone Monitor</span></div>
-            <div class="sub">✦ CLIENT CONNECTION ✦</div>
-            
-            <div class="code-display">
-                <div class="code" id="deviceCode">JMD-7890</div>
-                <div class="label">🔑 Your Device Code</div>
-            </div>
+<div class="container">
 
-            <div style="text-align:center;color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:16px;">
-                <i class="fas fa-shield-alt"></i> This code identifies your phone
-            </div>
-
-            <button class="btn-connect" onclick="connectDevice()"><i class="fas fa-link"></i> Connect Phone</button>
-            <button class="btn-secondary" onclick="shareClientLink()"><i class="fab fa-whatsapp"></i> Share with Admin</button>
-            
-            <div class="status" id="clientStatus">🔴 Not connected</div>
-            <div style="margin-top:12px;text-align:center;color:rgba(255,255,255,0.3);font-size:11px;">
-                <i class="fas fa-lock"></i> End-to-end encrypted
-            </div>
+    <!-- HEADER -->
+    <div class="header">
+        <div>
+            <h1>⬛ ADMIN DASHBOARD</h1>
+            <div style="font-size:11px;color:#00ff4188;">Silent Phone Data Monitor</div>
+        </div>
+        <div class="status">
+            <span class="dot"></span>
+            <span id="liveStatus">🟢 Live</span>
+            <span style="color:#00ff4188;margin-left:10px;font-size:11px;" id="lastUpdate">Updated: Just now</span>
+            <button class="btn" onclick="refreshDashboard()" style="width:auto;padding:4px 14px;font-size:10px;margin-left:8px;">🔄</button>
         </div>
     </div>
 
-    <!-- ===== ADMIN DASHBOARD ===== -->
-    <div id="dashboardPage" style="display:none;">
-        <div class="header">
-            <div class="logo-text">📱 <span>Phone Monitor</span></div>
-            <div class="header-actions">
-                <span style="font-size:13px;color:var(--text2);"><i class="fas fa-user-shield"></i> <span id="adminName">Admin</span></span>
-                <button class="btn btn-outline" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark</button>
-                <button class="btn btn-outline" onclick="refreshData()"><i class="fas fa-sync"></i> Refresh</button>
-                <button class="btn btn-danger" onclick="disconnectClient()"><i class="fas fa-link"></i> Disconnect</button>
-            </div>
-        </div>
+    <!-- STATS -->
+    <div class="stats-grid">
+        <div class="stat-card"><div class="num" id="totalDevices">0</div><div class="label">📱 Devices</div></div>
+        <div class="stat-card"><div class="num" id="totalCalls">0</div><div class="label">📞 Calls</div></div>
+        <div class="stat-card"><div class="num" id="totalMsgs">0</div><div class="label">💬 Messages</div></div>
+        <div class="stat-card"><div class="num" id="totalApps">0</div><div class="label">📲 Apps</div></div>
+    </div>
 
-        <div class="dashboard">
-
-            <!-- Client Status -->
-            <div class="client-status">
-                <div class="info">
-                    <span class="dot online" id="clientDot"></span>
-                    <div>
-                        <div class="name" id="clientName">📱 Client: JMD-7890</div>
-                        <div class="detail" id="clientDetail">Last active: Just now</div>
-                    </div>
-                </div>
-                <div class="actions">
-                    <button class="btn btn-success" onclick="refreshData()"><i class="fas fa-sync"></i> Sync Now</button>
-                </div>
-            </div>
-
-            <!-- Share Bar -->
-            <div class="share-bar">
-                <div class="link">
-                    <span class="label">🔗 Share Link:</span>
-                    <span id="shareLink">Loading...</span>
-                </div>
-                <div class="actions">
-                    <button class="btn btn-copy" onclick="copyLink()"><i class="fas fa-copy"></i> Copy</button>
-                    <button class="btn btn-share" onclick="shareLink()"><i class="fab fa-whatsapp"></i> Share</button>
-                    <button class="btn btn-qr" onclick="showQR()"><i class="fas fa-qrcode"></i> QR</button>
-                </div>
-            </div>
-
-            <div class="welcome">
-                <h1>📊 Phone Monitoring Dashboard</h1>
-                <p>Real-time data from connected phone: <strong id="connectedPhone">JMD-7890</strong></p>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card"><div class="icon">📱</div><div class="label">Phone Model</div><div class="value" id="phoneModel">iPhone 14 Pro</div></div>
-                <div class="stat-card"><div class="icon">📞</div><div class="label">Total Calls</div><div class="value" id="totalCalls">0</div><div class="sub" id="callDetail">0 incoming · 0 outgoing</div></div>
-                <div class="stat-card"><div class="icon">💬</div><div class="label">WhatsApp Messages</div><div class="value" id="totalMessages">0</div></div>
-                <div class="stat-card"><div class="icon">📲</div><div class="label">Apps Used</div><div class="value" id="totalApps">0</div><div class="sub" id="appDetail">0 active</div></div>
-            </div>
-
-            <!-- Calls -->
-            <div class="section-header">
-                <h2>📞 Recent Calls <span class="count" id="callCount">(0)</span></h2>
-                <button class="btn btn-outline" onclick="refreshData()"><i class="fas fa-sync"></i> Refresh</button>
-            </div>
-            <div class="device-grid" id="callsGrid"></div>
-
-            <!-- WhatsApp Messages -->
-            <div class="section-header">
-                <h2>💬 WhatsApp Messages <span class="count" id="msgCount">(0)</span></h2>
-            </div>
-            <div class="device-grid" id="messagesGrid"></div>
-
-            <!-- Apps -->
-            <div class="section-header">
-                <h2>📲 Apps <span class="count" id="appCount">(0)</span></h2>
-            </div>
-            <div class="device-grid" id="appsGrid"></div>
-
+    <!-- CLIENTS -->
+    <div class="card">
+        <h3>📱 Connected Devices <span id="deviceCount">(0)</span></h3>
+        <div id="clientsList">
+            <div style="color:#00ff4188;text-align:center;padding:20px;font-size:13px;">⏳ Waiting for data...</div>
         </div>
     </div>
 
-    <!-- ===== TOAST ===== -->
-    <div class="toast" id="toast"></div>
-
-    <!-- ===== MODAL ===== -->
-    <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
-        <div class="modal" id="modalContent"></div>
+    <!-- DATA -->
+    <div class="grid-2">
+        <div class="card">
+            <h3>📞 Calls <span id="callCount">(0)</span></h3>
+            <div id="callsList"><div style="color:#00ff4188;font-size:12px;">No calls yet</div></div>
+        </div>
+        <div class="card">
+            <h3>💬 Messages <span id="msgCount">(0)</span></h3>
+            <div id="messagesList"><div style="color:#00ff4188;font-size:12px;">No messages yet</div></div>
+        </div>
     </div>
 
-    <script>
-        // ==========================================
-        // 🔥 PHONE MONITORING SYSTEM
-        // ==========================================
+    <!-- APPS -->
+    <div class="card">
+        <h3>📲 Apps <span id="appCount">(0)</span></h3>
+        <div id="appsList"><div style="color:#00ff4188;font-size:12px;">No apps data</div></div>
+    </div>
 
-        // ==========================================
-        // STATE
-        // ==========================================
-        let isConnected = false;
-        let clientCode = 'JMD-7890';
-        let phoneData = {
-            model: 'iPhone 14 Pro',
-            calls: [
-                { number: '+91 98765 43210', duration: '5:23', type: 'incoming', time: '10:30 AM' },
-                { number: '+91 87654 32109', duration: '2:15', type: 'outgoing', time: '09:45 AM' },
-                { number: '+91 76543 21098', duration: '0:00', type: 'missed', time: '08:20 AM' }
-            ],
-            messages: [
-                { sender: 'Mom', message: 'Coming home for lunch?', time: '11:15 AM' },
-                { sender: 'Rahul', message: 'Game at 4pm?', time: '10:45 AM' },
-                { sender: 'Priya', message: 'Ok see you there!', time: '09:30 AM' }
-            ],
-            apps: [
-                { name: 'WhatsApp', icon: 'fab fa-whatsapp', time: '45m', active: true },
-                { name: 'Instagram', icon: 'fab fa-instagram', time: '32m', active: true },
-                { name: 'YouTube', icon: 'fab fa-youtube', time: '28m', active: true },
-                { name: 'Snapchat', icon: 'fab fa-snapchat', time: '15m', active: false }
-            ]
-        };
-        let isDarkMode = false;
+    <!-- LOGS -->
+    <div class="card">
+        <h3>📋 Activity Logs</h3>
+        <div class="logs" id="logs">
+            <div class="log-entry">[System] Dashboard initialized</div>
+        </div>
+    </div>
 
-        // ==========================================
-        // INIT
-        // ==========================================
-        function init() {
-            updateShareLink();
-            generateDeviceCode();
+    <!-- SHARE LINK -->
+    <div class="card" style="border-color:#00ff4166;">
+        <h3>🔗 Client Link (Silent Mode)</h3>
+        <div style="background:#000a00;padding:10px;border-radius:8px;border:1px dashed #00ff4133;word-break:break-all;font-size:12px;color:#00ff41;margin:6px 0;" id="shareLink">Loading...</div>
+        <div style="display:flex;gap:8px;">
+            <button class="btn" onclick="copyLink()" style="padding:8px;">📋 Copy</button>
+            <button class="btn" onclick="shareWhatsApp()" style="padding:8px;">💬 WhatsApp</button>
+        </div>
+    </div>
 
-            if (localStorage.getItem('monitor_darkmode') === 'true') {
-                document.body.classList.add('dark-mode');
-                isDarkMode = true;
+</div>
+
+<script>
+    // ==========================================
+    // 🔥 ADMIN DASHBOARD - REAL DATA
+    // ==========================================
+
+    let devices = {};
+
+    // ==========================================
+    // LOAD DATA FROM LOCALSTORAGE
+    // ==========================================
+    function loadData() {
+        try {
+            const raw = localStorage.getItem('phone_data');
+            if (raw) {
+                devices = JSON.parse(raw);
+                renderDashboard();
+                addLog('📊 Data loaded: ' + Object.keys(devices).length + ' devices');
+            } else {
+                // Demo data if nothing exists
+                addLog('⏳ Waiting for client data...');
             }
+        } catch(e) {
+            console.log('Load error:', e);
+        }
+        updateStats();
+    }
 
-            // Check if already connected
-            if (localStorage.getItem('phone_connected') === 'true') {
-                connectDevice();
-            }
-
-            // Auto refresh every 10 seconds
-            setInterval(() => {
-                if (isConnected) {
-                    refreshData();
-                }
-            }, 10000);
+    // ==========================================
+    // RENDER DASHBOARD
+    // ==========================================
+    function renderDashboard() {
+        const deviceIds = Object.keys(devices);
+        if (deviceIds.length === 0) {
+            document.getElementById('clientsList').innerHTML = '<div style="color:#00ff4188;text-align:center;padding:20px;font-size:13px;">⏳ No devices connected yet</div>';
+            return;
         }
 
-        // ==========================================
-        // GENERATE DEVICE CODE
-        // ==========================================
-        function generateDeviceCode() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let code = 'JMD-';
-            for (let i = 0; i < 4; i++) {
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            clientCode = code;
-            document.getElementById('deviceCode').textContent = code;
-            
-            // Save to localStorage
-            localStorage.setItem('device_code', code);
-        }
+        let clientsHtml = '';
+        let allCalls = [];
+        let allMessages = [];
+        let allApps = [];
 
-        // ==========================================
-        // CONNECT DEVICE
-        // ==========================================
-        function connectDevice() {
-            isConnected = true;
-            localStorage.setItem('phone_connected', 'true');
-            
-            document.getElementById('clientPage').style.display = 'none';
-            document.getElementById('dashboardPage').style.display = 'block';
-            document.getElementById('clientName').textContent = '📱 Client: ' + clientCode;
-            document.getElementById('connectedPhone').textContent = clientCode;
-            document.getElementById('clientDot').className = 'dot online';
-            
-            renderData();
-            updateStats();
-            toast('✅ Phone connected! Monitoring started.');
-        }
+        deviceIds.forEach(id => {
+            const d = devices[id];
+            const lastUpdate = d.lastUpdate ? new Date(d.lastUpdate).toLocaleTimeString() : 'Never';
+            const isOnline = d.lastUpdate && (Date.now() - new Date(d.lastUpdate).getTime() < 30000);
 
-        // ==========================================
-        // DISCONNECT CLIENT
-        // ==========================================
-        function disconnectClient() {
-            if (!confirm('Disconnect phone?')) return;
-            isConnected = false;
-            localStorage.removeItem('phone_connected');
-            document.getElementById('dashboardPage').style.display = 'none';
-            document.getElementById('clientPage').style.display = 'flex';
-            document.getElementById('clientStatus').textContent = '🔴 Disconnected';
-            toast('👋 Phone disconnected');
-        }
-
-        // ==========================================
-        // RENDER DATA
-        // ==========================================
-        function renderData() {
-            renderCalls();
-            renderMessages();
-            renderApps();
-            updateStats();
-        }
-
-        function renderCalls() {
-            const grid = document.getElementById('callsGrid');
-            grid.innerHTML = '';
-            
-            if (phoneData.calls.length === 0) {
-                grid.innerHTML = `
-                    <div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text2);">
-                        <div style="font-size:36px;margin-bottom:8px;">📞</div>
-                        <p>No calls recorded yet</p>
-                    </div>
-                `;
-                return;
-            }
-
-            const card = document.createElement('div');
-            card.className = 'device-card';
-            card.innerHTML = `
-                <div class="device-header">
-                    <div class="device-name">📞 Call History</div>
-                    <div class="device-status">${phoneData.calls.length} calls</div>
-                </div>
-                ${phoneData.calls.map(call => `
-                    <div class="call-item">
-                        <span class="number">${call.number}</span>
-                        <span class="duration">${call.duration}</span>
-                        <span class="type ${call.type}">${call.type}</span>
-                        <span style="font-size:11px;color:var(--text2);">${call.time}</span>
-                    </div>
-                `).join('')}
-            `;
-            grid.appendChild(card);
-            document.getElementById('callCount').textContent = '(' + phoneData.calls.length + ')';
-            document.getElementById('totalCalls').textContent = phoneData.calls.length;
-        }
-
-        function renderMessages() {
-            const grid = document.getElementById('messagesGrid');
-            grid.innerHTML = '';
-            
-            if (phoneData.messages.length === 0) {
-                grid.innerHTML = `
-                    <div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text2);">
-                        <div style="font-size:36px;margin-bottom:8px;">💬</div>
-                        <p>No messages yet</p>
-                    </div>
-                `;
-                return;
-            }
-
-            const card = document.createElement('div');
-            card.className = 'device-card';
-            card.innerHTML = `
-                <div class="device-header">
-                    <div class="device-name">💬 WhatsApp Messages</div>
-                    <div class="device-status">${phoneData.messages.length} messages</div>
-                </div>
-                ${phoneData.messages.map(msg => `
-                    <div class="msg-item">
-                        <span class="sender">${msg.sender}</span>
-                        <span class="msg">${msg.message}</span>
-                        <span class="time">${msg.time}</span>
-                    </div>
-                `).join('')}
-            `;
-            grid.appendChild(card);
-            document.getElementById('msgCount').textContent = '(' + phoneData.messages.length + ')';
-            document.getElementById('totalMessages').textContent = phoneData.messages.length;
-        }
-
-        function renderApps() {
-            const grid = document.getElementById('appsGrid');
-            grid.innerHTML = '';
-            
-            if (phoneData.apps.length === 0) {
-                grid.innerHTML = `
-                    <div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text2);">
-                        <div style="font-size:36px;margin-bottom:8px;">📲</div>
-                        <p>No apps data</p>
-                    </div>
-                `;
-                return;
-            }
-
-            const card = document.createElement('div');
-            card.className = 'device-card';
-            card.innerHTML = `
-                <div class="device-header">
-                    <div class="device-name">📲 Apps</div>
-                    <div class="device-status">${phoneData.apps.filter(a => a.active).length} active</div>
-                </div>
-                <div class="app-list">
-                    ${phoneData.apps.map(app => `
-                        <div class="app-item">
-                            <div><i class="${app.icon}"></i> ${app.name}</div>
-                            <div>
-                                <span class="status ${app.active ? 'active' : 'inactive'}">${app.active ? '●' : '○'}</span>
-                                <span class="time">${app.time}</span>
-                            </div>
+            clientsHtml += `
+                <div class="client-card">
+                    <div class="top">
+                        <div>
+                            <div class="client-name">📱 ${id}</div>
+                            <div class="client-id">Last active: ${lastUpdate}</div>
                         </div>
-                    `).join('')}
+                        <span class="status-badge ${isOnline ? 'online' : 'offline'}">${isOnline ? '🟢 Online' : '🔴 Offline'}</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;font-size:12px;">
+                        ${d.device ? `<div><span style="color:#00ff4188;">Model:</span> <span style="color:#00ff41;">${d.device.model || 'Unknown'}</span></div>` : ''}
+                        ${d.location ? `<div><span style="color:#00ff4188;">Location:</span> <span style="color:#00ff41;">${d.location.lat || 'N/A'}, ${d.location.lng || 'N/A'}</span></div>` : ''}
+                        ${d.device ? `<div><span style="color:#00ff4188;">Battery:</span> <span style="color:#00ff41;">${d.device.battery || 'N/A'}</span></div>` : ''}
+                        ${d.device ? `<div><span style="color:#00ff4188;">OS:</span> <span style="color:#00ff41;">${d.device.os || 'Unknown'}</span></div>` : ''}
+                    </div>
                 </div>
             `;
-            grid.appendChild(card);
-            document.getElementById('appCount').textContent = '(' + phoneData.apps.length + ')';
-            document.getElementById('totalApps').textContent = phoneData.apps.length;
-            const activeApps = phoneData.apps.filter(a => a.active).length;
-            document.getElementById('appDetail').textContent = activeApps + ' active';
-        }
 
-        function updateStats() {
-            const incoming = phoneData.calls.filter(c => c.type === 'incoming').length;
-            const outgoing = phoneData.calls.filter(c => c.type === 'outgoing').length;
-            document.getElementById('callDetail').textContent = `${incoming} incoming · ${outgoing} outgoing`;
-            document.getElementById('phoneModel').textContent = phoneData.model;
-        }
-
-        // ==========================================
-        // REFRESH DATA (Simulate New Data)
-        // ==========================================
-        function refreshData() {
-            if (!isConnected) return;
-
-            // Simulate new call
-            if (Math.random() > 0.5) {
-                phoneData.calls.unshift({
-                    number: "+91 " + Math.floor(1000000000 + Math.random() * 9000000000),
-                    duration: Math.floor(Math.random() * 300) + "s",
-                    type: ['incoming', 'outgoing', 'missed'][Math.floor(Math.random() * 3)],
-                    time: new Date().toLocaleTimeString()
-                });
-                if (phoneData.calls.length > 10) phoneData.calls.pop();
+            // Collect calls
+            if (d.calls && d.calls.calls) {
+                allCalls = allCalls.concat(d.calls.calls);
             }
-
-            // Simulate new message
-            if (Math.random() > 0.5) {
-                const names = ['Mom', 'Dad', 'Friend', 'Teacher', 'Sister', 'Brother'];
-                phoneData.messages.unshift({
-                    sender: names[Math.floor(Math.random() * names.length)],
-                    message: ['Ok', 'Coming', 'Done', 'See you', 'Thanks', 'Yes', 'No'][Math.floor(Math.random() * 7)],
-                    time: new Date().toLocaleTimeString()
-                });
-                if (phoneData.messages.length > 10) phoneData.messages.pop();
+            // Collect messages
+            if (d.messages && d.messages.messages) {
+                allMessages = allMessages.concat(d.messages.messages);
             }
-
-            // Simulate app activity
-            phoneData.apps.forEach(app => {
-                app.active = Math.random() > 0.3;
-                if (app.active) {
-                    app.time = Math.floor(Math.random() * 60) + 'm';
-                }
-            });
-
-            renderData();
-            toast('🔄 Data updated!');
-        }
-
-        // ==========================================
-        // SHARE LINK
-        // ==========================================
-        function updateShareLink() {
-            const link = window.location.href;
-            document.getElementById('shareLink').textContent = link;
-        }
-
-        function copyLink() {
-            const link = document.getElementById('shareLink').textContent;
-            navigator.clipboard.writeText(link).then(() => toast('✅ Link copied!'));
-        }
-
-        function shareLink() {
-            const link = document.getElementById('shareLink').textContent;
-            const msg = encodeURIComponent('📱 Phone Monitor\n\nShare this link to connect your phone and start monitoring.\n\n' + link);
-            window.open('https://wa.me/?text=' + msg, '_blank');
-        }
-
-        function shareClientLink() {
-            const link = window.location.href;
-            const code = clientCode;
-            const msg = encodeURIComponent('📱 Phone Monitoring Setup\n\n1. Open this link on your phone: ' + link + '\n2. Your device code: ' + code + '\n3. Click "Connect Phone"\n\n✅ You\'re being monitored!');
-            window.open('https://wa.me/?text=' + msg, '_blank');
-        }
-
-        function showQR() {
-            const link = document.getElementById('shareLink').textContent;
-            const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(link);
-            
-            const html = `
-                <button class="modal-close" onclick="closeModal()">✕</button>
-                <h2 style="margin-bottom:12px;">📱 Scan QR Code</h2>
-                <div style="text-align:center;">
-                    <img src="${qrUrl}" style="max-width:250px;border-radius:12px;border:2px solid var(--border);">
-                    <p style="margin-top:12px;color:var(--text2);font-size:13px;">Scan to connect your phone</p>
-                </div>
-                <button class="btn-submit" onclick="closeModal()" style="margin-top:16px;">Close</button>
-            `;
-            openModal(html);
-        }
-
-        // ==========================================
-        // UTILITY FUNCTIONS
-        // ==========================================
-        function openModal(html) {
-            document.getElementById('modalContent').innerHTML = html;
-            document.getElementById('modalOverlay').classList.add('show');
-        }
-
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.remove('show');
-        }
-
-        function toast(msg) {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.style.display = 'block';
-            clearTimeout(t._timeout);
-            t._timeout = setTimeout(() => t.style.display = 'none', 2500);
-        }
-
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('monitor_darkmode', document.body.classList.contains('dark-mode'));
-        }
-
-        // ==========================================
-        // KEYBOARD SHORTCUTS
-        // ==========================================
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeModal();
+            // Collect apps
+            if (d.apps && d.apps.apps) {
+                allApps = allApps.concat(d.apps.apps);
+            }
         });
 
-        // ==========================================
-        // EXPOSE FUNCTIONS
-        // ==========================================
-        window.connectDevice = connectDevice;
-        window.disconnectClient = disconnectClient;
-        window.refreshData = refreshData;
-        window.copyLink = copyLink;
-        window.shareLink = shareLink;
-        window.shareClientLink = shareClientLink;
-        window.showQR = showQR;
-        window.closeModal = closeModal;
-        window.toast = toast;
-        window.toggleDarkMode = toggleDarkMode;
+        document.getElementById('clientsList').innerHTML = clientsHtml;
+        document.getElementById('deviceCount').textContent = '(' + deviceIds.length + ')';
+        document.getElementById('totalDevices').textContent = deviceIds.length;
 
-        // ==========================================
-        // INIT
-        // ==========================================
-        console.log('📱 Phone Monitor System Loaded!');
-        console.log('🔑 Device Code:', clientCode);
-        console.log('🔗 Share Link:', window.location.href);
+        // Render calls
+        renderCalls(allCalls);
+        // Render messages
+        renderMessages(allMessages);
+        // Render apps
+        renderApps(allApps);
 
-        init();
-    </script>
+        updateStats();
+    }
+
+    // ==========================================
+    // RENDER CALLS
+    // ==========================================
+    function renderCalls(calls) {
+        const container = document.getElementById('callsList');
+        if (!calls || calls.length === 0) {
+            container.innerHTML = '<div style="color:#00ff4188;font-size:12px;">No calls yet</div>';
+            return;
+        }
+        document.getElementById('callCount').textContent = '(' + calls.length + ')';
+        container.innerHTML = calls.slice(0, 10).map(c => `
+            <div class="item">
+                <span class="label">${c.number || 'Unknown'}</span>
+                <span class="value ${c.type || 'incoming'}">● ${c.type || 'incoming'}</span>
+                <span style="color:#00ff4188;font-size:10px;">${c.duration || '0s'}</span>
+            </div>
+        `).join('');
+    }
+
+    // ==========================================
+    // RENDER MESSAGES
+    // ==========================================
+    function renderMessages(messages) {
+        const container = document.getElementById('messagesList');
+        if (!messages || messages.length === 0) {
+            container.innerHTML = '<div style="color:#00ff4188;font-size:12px;">No messages yet</div>';
+            return;
+        }
+        document.getElementById('msgCount').textContent = '(' + messages.length + ')';
+        container.innerHTML = messages.slice(0, 10).map(m => `
+            <div class="item">
+                <span class="label">${m.sender || 'Unknown'}</span>
+                <span class="value">${m.message || ''}</span>
+                <span style="color:#00ff4188;font-size:10px;">${m.time || ''}</span>
+            </div>
+        `).join('');
+    }
+
+    // ==========================================
+    // RENDER APPS
+    // ==========================================
+    function renderApps(apps) {
+        const container = document.getElementById('appsList');
+        if (!apps || apps.length === 0) {
+            container.innerHTML = '<div style="color:#00ff4188;font-size:12px;">No apps data</div>';
+            return;
+        }
+        document.getElementById('appCount').textContent = '(' + apps.length + ')';
+        container.innerHTML = apps.slice(0, 10).map(a => `
+            <div class="item">
+                <span class="label">${a.name || 'Unknown'}</span>
+                <span class="value" style="color:${a.active ? '#00ff41' : '#00ff4188'};">${a.active ? '●' : '○'} ${a.time || '0m'}</span>
+            </div>
+        `).join('');
+    }
+
+    // ==========================================
+    // UPDATE STATS
+    // ==========================================
+    function updateStats() {
+        const deviceIds = Object.keys(devices);
+        let totalCalls = 0, totalMsgs = 0, totalApps = 0;
+        deviceIds.forEach(id => {
+            const d = devices[id];
+            if (d.calls && d.calls.calls) totalCalls += d.calls.calls.length;
+            if (d.messages && d.messages.messages) totalMsgs += d.messages.messages.length;
+            if (d.apps && d.apps.apps) totalApps += d.apps.apps.length;
+        });
+        document.getElementById('totalCalls').textContent = totalCalls;
+        document.getElementById('totalMsgs').textContent = totalMsgs;
+        document.getElementById('totalApps').textContent = totalApps;
+    }
+
+    // ==========================================
+    // REFRESH DASHBOARD
+    // ==========================================
+    function refreshDashboard() {
+        loadData();
+        document.getElementById('lastUpdate').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+        addLog('🔄 Dashboard refreshed');
+    }
+
+    // ==========================================
+    // SHARE LINK
+    // ==========================================
+    function updateShareLink() {
+        const link = window.location.href.replace('/admin', '');
+        document.getElementById('shareLink').textContent = link;
+    }
+
+    function copyLink() {
+        const link = document.getElementById('shareLink').textContent;
+        navigator.clipboard.writeText(link).then(() => toast('✅ Link copied!'));
+    }
+
+    function shareWhatsApp() {
+        const link = document.getElementById('shareLink').textContent;
+        const msg = encodeURIComponent('📱 Click to connect phone:\n' + link);
+        window.open('https://wa.me/?text=' + msg, '_blank');
+    }
+
+    // ==========================================
+    // TOAST
+    // ==========================================
+    function toast(msg) {
+        const t = document.createElement('div');
+        t.style.cssText = `
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #001a00; color: #00ff41; padding: 10px 20px; border-radius: 8px;
+            font-size: 12px; z-index: 9999; border: 1px solid #00ff4133;
+            font-family: 'Courier New', monospace;
+        `;
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; setTimeout(() => t.remove(), 300); }, 2000);
+    }
+
+    // ==========================================
+    // LOGS
+    // ==========================================
+    function addLog(message) {
+        const logs = document.getElementById('logs');
+        const time = new Date().toLocaleTimeString();
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        entry.textContent = `[${time}] ${message}`;
+        logs.appendChild(entry);
+        logs.scrollTop = logs.scrollHeight;
+        if (logs.children.length > 20) logs.removeChild(logs.children[0]);
+    }
+
+    // ==========================================
+    // AUTO REFRESH
+    // ==========================================
+    setInterval(() => {
+        loadData();
+        document.getElementById('lastUpdate').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+    }, 5000);
+
+    // ==========================================
+    // INIT
+    // ==========================================
+    function init() {
+        updateShareLink();
+        loadData();
+        addLog('🟢 Dashboard ready - waiting for devices');
+        console.log('⬛ Admin Dashboard Loaded');
+    }
+
+    // Expose functions
+    window.copyLink = copyLink;
+    window.shareWhatsApp = shareWhatsApp;
+    window.refreshDashboard = refreshDashboard;
+
+    init();
+</script>
 
 </body>
 </html>
